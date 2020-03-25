@@ -1,5 +1,4 @@
-let domFocusTime = document.getElementsByName("focus-time");
-let domBreakTime = document.getElementsByName("break-time");
+let domActivities = document.getElementsByName("activities");
 
 function setEventListeners() {
   document.getElementById("options-form").addEventListener("submit", e => {
@@ -12,54 +11,126 @@ function setEventListeners() {
   });
 
   document.getElementById('fitness').addEventListener("click", e => {
-    var div = document.getElementById('fitness-activities');
-    toggleDivDisplay(div);
+    document.getElementById('fitness-activities').style.display = 'block';
+    document.getElementById('meditation-activities').style.display = 'none';
+    document.getElementById('stretching-activities').style.display = 'none';
+    document.getElementById("stretching-list").innerHTML = "";
+    document.getElementById("meditation-list").innerHTML = "";
   });
 
   document.getElementById('meditation').addEventListener("click", e => {
-    var div = document.getElementById('meditation-activities');
-    toggleDivDisplay(div);
+    document.getElementById('fitness-activities').style.display = 'none';
+    document.getElementById('meditation-activities').style.display = 'block';
+    document.getElementById('stretching-activities').style.display = 'none';
+    document.getElementById("stretching-list").innerHTML = "";
+    document.getElementById("fitness-list").innerHTML = "";
   });
 
   document.getElementById('stretching').addEventListener("click", e => {
-    var div = document.getElementById('stretching-activities');
-    toggleDivDisplay(div);
+    document.getElementById('fitness-activities').style.display = 'none';
+    document.getElementById('meditation-activities').style.display = 'none';
+    document.getElementById('stretching-activities').style.display = 'block';
+    document.getElementById("fitness-list").innerHTML = "";
+    document.getElementById("meditation-list").innerHTML = "";
+  });
+
+  document.getElementById('focus-time-minus').addEventListener("click", e => {
+    var input = document.getElementById('focus-time');
+    var count = parseInt(input.value) - 1;
+    count = count < 1 ? 1 : count;
+    input.value = count;
+    return false;
+  });
+  document.getElementById('focus-time-plus').addEventListener("click", e => {
+    var input = document.getElementById('focus-time');
+    var count = parseInt(input.value) + 1;
+    count = count > 150 ? 150 : count;
+    input.value = count;
+    return false;
+  });
+
+  document.getElementById('break-time-minus').addEventListener("click", e => {
+    var input = document.getElementById('break-time');
+    var count = parseInt(input.value) - 1;
+    count = count < 1 ? 1 : count;
+    input.value = count;
+    return false;
+  });
+  document.getElementById('break-time-plus').addEventListener("click", e => {
+    var input = document.getElementById('break-time');
+    var count = parseInt(input.value) + 1;
+    count = count > 30 ? 30 : count;
+    input.value = count;
+    return false;
+  });
+
+  document.getElementById('stretching-btn').addEventListener("click", e => {
+    var text = document.getElementById("stretching-url").value;
+    var li = document.createElement('li');
+    li.innerHTML = text;
+    document.getElementById('stretching-list').appendChild(li);
+  });
+
+  document.getElementById('meditation-btn').addEventListener("click", e => {
+    var text = document.getElementById("meditation-url").value;
+    var li = document.createElement('li');
+    li.innerHTML = text;
+    document.getElementById('meditation-list').appendChild(li);
+  });
+
+  document.getElementById('fitness-btn').addEventListener("click", e => {
+    var text = document.getElementById("fitness-url").value;
+    var li = document.createElement('li');
+    li.innerHTML = text;
+    document.getElementById('fitness-list').appendChild(li);
   });
 }
 
-function toggleDivDisplay(div) {
-  if (div.style.display === 'none') {
-    div.style.display = 'block';
-  } else {
-    div.style.display = 'none';
-  }
-}
-
 function resetDefaults() {
-  document.getElementById("one-hr").checked = true;
-  document.getElementById("10-mins").checked = true;
+  document.getElementById("focus-time").value = 30;
+  document.getElementById("break-time").value = 5;
   document.getElementById("fitness").checked = false;
   document.getElementById("meditation").checked = false;
   document.getElementById("stretching").checked = false;
   document.getElementById('fitness-activities').style.display = 'none';
   document.getElementById('meditation-activities').style.display = 'none';
   document.getElementById('stretching-activities').style.display = 'none';
+  document.getElementById("fitness-list").innerHTML = "";
+  document.getElementById("meditation-list").innerHTML = "";
+  document.getElementById("stretching-list").innerHTML = "";
 }
 
 function saveOptions() {
 
-  const focusTime = getCheckedValue(domFocusTime);
+  const focusTime = document.getElementById('focus-time').value;
   chrome.storage.sync.set({focusTime: focusTime}, function() {
    console.log('focusTime is ' + focusTime);
   });
 
-  const breakTime = getCheckedValue(domBreakTime);
+  const breakTime = document.getElementById('break-time').value;
   chrome.storage.sync.set({breakTime: breakTime}, function() {
    console.log('breakTime is ' + breakTime);
   });
 
-  //Need to store fav activities
+  const activityCategory = getCheckedValue(domActivities);
 
+  if(typeof activityCategory !== 'undefined') {
+    chrome.storage.sync.set({activityCategory: activityCategory}, function() {
+     console.log('Selected activity is ' + activityCategory);
+    });
+
+    var activityLst = [];
+    const lstNodes = document.getElementById(activityCategory + "-list").getElementsByTagName("li");
+    for (let i = 0; i < lstNodes.length; i++) {
+      activityLst.push(lstNodes[i].textContent);
+    }
+
+//    const activities = document.getElementById(activityCategory + "-activities-lst").value;
+//    const activityLst = activities.split(/[ ,\n]/);
+    chrome.storage.sync.set({activityLst: activityLst}, function() {
+     console.log('Provided activity list is ' + activityLst);
+    });
+  }
 }
 
 function getCheckedValue(radioElement) {
