@@ -1,21 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-        button {
-          height: 30px;
-          width: 30px;
-          outline: none;
-          margin: 10px;
-        }
-      </style>
+  <title>Options - Healthy-Productivity</title>
 </head>
+
+<script type="module" src="../js/options.js"></script>
+
 <body>
-<div id="buttonDiv">
-</div>
+<form id="options-form">
+  <div class="form-group" id="focusDiv">
+    <h3>Focus time</h3>
+    <input type="radio" class="form-control" name="focus-time" id = "half-hr" value="0.5" />
+    <label for="half-hr" class="control-label">Every 30 minutes</label><br/>
+    <input type="radio" class="form-control" name="focus-time" id = "one-hr" value="1" checked="checked"/>
+    <label for="one-hr" class="control-label">Every 1 hour</label><br/>
+    <input type="radio" class="form-control" name="focus-time" id = "one-and-half-hr" value="1.5" />
+    <label for="one-and-half-hr" class="control-label">Every 1.5 hours</label><br/>
+    <input type="radio" class="form-control" name="focus-time" id = "two-hr" value="2" />
+    <label for="two-hr" class="control-label">Every 2 hours</label>
+  </div>
+  <div class="form-group" id="breakDiv">
+    <h3>Short break</h3>
+    <input type="radio" class="form-control" name="break-time" id="5-mins" value="5" />
+    <label for="5-mins" class="control-label">5 minutes</label><br/>
+    <input type="radio" class="form-control" name="break-time" id="10-mins" value="10" checked="checked"/>
+    <label for="10-mins" class="control-label">10 minutes</label><br/>
+    <input type="radio" class="form-control" name="break-time" id="15-mins" value="15" />
+    <label for="15-mins" class="control-label">15 minutes</label>
+  </div>
+  <div class="form-group">
+    <h3>Break time activities</h3>
+    <input type="checkbox" class="form-control" name="fitness" id="fitness" value="fitness"/>
+    <label for="fitness" class="control-label">Fitness</label><br/>
+    <div style="display:none" id="fitness-activities">
+      <textarea
+          rows = "4" cols = "100"
+          placeholder="Provide links to your favorite fitness videos here. A random link from this list will be selected and will be showed as suggestions in your break time"></textarea>
+    </div>
+    <input type="checkbox" class="form-control" name="meditation" id="meditation" value="meditation"/>
+    <label for="meditation" class="control-label">Meditation</label><br/>
+    <div style="display:none" id="meditation-activities">
+      <textarea
+          rows = "4" cols = "100"
+          placeholder="Provide links to your favorite meditation videos here. A random link from this list will be selected and will be showed as suggestions in your break time"></textarea>
+    </div>
+    <input type="checkbox" class="form-control" name="stretching" id="stretching" value="stretching"/>
+    <label for="stretching" class="control-label">Stretching</label>
+    <div style="display:none" id="stretching-activities">
+      <textarea
+          rows = "4" cols = "100"
+          placeholder="Provide links to your favorite stretching activities here. A random link from this list will be selected and will be showed as suggestions in your break time"></textarea>
+    </div>
+  </div>
+
+  <br/>
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<hr />
+
 <div>
-  <p>Choose a different background color!</p>
+  <button class="btn btn-xs btn-warning" id="reset-options">
+    Reset to default
+  </button>
 </div>
 </body>
-<script src="../js/options.js"></script>
 </html>
