@@ -19,16 +19,16 @@ function setAlarm(event) {
 function clearAlarm() {
   chrome.browserAction.setBadgeText({ text: "" });
   chrome.alarms.clearAll();
-  hideBanner();
-  // window.close();
+  toggleFocusScreen();
 }
 
-function hideBanner() {
+function toggleFocusScreen() {
   let screenDiv = document.getElementById(screen);
   screenDiv.classList.add("hide");
   let showScreenDiv = document.getElementById("breakTimeDiv");
   showScreenDiv.classList.remove("hide");
 }
+
 //An Alarm delay of less than the minimum 1 minute will fire
 // in approximately 1 minute incriments if released
 document
