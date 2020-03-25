@@ -1,16 +1,43 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Healthy Productivity</title>
     <style>
+      body {
+        text-align: center;
+      }
+
       button {
-        height: 30px;
-        width: 30px;
+        margin: 5px;
         outline: none;
       }
+
+      button:hover {
+        outline: #80deea dotted thick;
+      }
     </style>
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
   </head>
   <body>
-    Testing
+    <!-- When break time is up show focus time screen -->
+    <div id="focusTimeDiv">
+      <img src="../images/stay_focused.png" id="focusImage" />
+    </div>
+    <!-- When focus time is up show break time screen -->
+    <div id="breakTimeDiv">
+      <img src="../images/break.png" id="breakImage" />
+    </div>
+    <div id="timerDiv">
+      <!-- Once start is clicked, it will change to Pause button -->
+      <button id="startTimerButton" value="25">Start</button>
+      <button id="startTimerButton" value="25">Pause</button>
+      <button id="stopTimerButton">Stop</button>
+    </div>
     <button id="changeColor"></button>
     <script src="../js/popup.js"></script>
   </body>
