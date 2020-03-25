@@ -15,6 +15,10 @@
       button:hover {
         outline: #80deea dotted thick;
       }
+
+      .hide {
+        display: none;
+      }
     </style>
     <!--
       - JavaScript and HTML must be in separate files: see our Content Security
@@ -25,20 +29,27 @@
   </head>
   <body>
     <!-- When break time is up show focus time screen -->
-    <div id="focusTimeDiv">
+    <div id="focusTimeDiv" class="focusTimeDiv">
       <img src="../images/stay_focused.png" id="focusImage" />
+      <div id="focusButtons">
+        <!-- Once start is clicked, it will change to Pause button -->
+        <button id="startFocusTimerButton" name="focusAlarm" value="25">
+          Start
+        </button>
+        <button id="stopFocusTimerButton" name="focusAlarm">Stop</button>
+      </div>
     </div>
     <!-- When focus time is up show break time screen -->
-    <div id="breakTimeDiv">
+    <div id="breakTimeDiv" class="breakTimeDiv hide">
       <img src="../images/break.png" id="breakImage" />
+      <div id="breakButtons">
+        <!-- Once start is clicked, it will change to Pause button -->
+        <button id="startBreakTimerButton" name="breakAlarm" value="10">
+          Start
+        </button>
+        <button id="stopBreakTimerButton" name="breakAlarm">Stop</button>
+      </div>
     </div>
-    <div id="timerDiv">
-      <!-- Once start is clicked, it will change to Pause button -->
-      <button id="startTimerButton" value="25">Start</button>
-      <button id="startTimerButton" value="25">Pause</button>
-      <button id="stopTimerButton">Stop</button>
-    </div>
-    <button id="changeColor"></button>
     <script src="../js/popup.js"></script>
   </body>
 </html>

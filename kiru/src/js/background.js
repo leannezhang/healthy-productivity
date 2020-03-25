@@ -4,20 +4,21 @@
 
 "use strict";
 
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({ color: "#3aa757" }, function() {
-    console.log("The color is green.");
+chrome.alarms.onAlarm.addListener(function() {
+  chrome.browserAction.setBadgeText({ text: "" });
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: "stay_focused.png",
+    title: "Time to focus",
+    message: "Time to focus",
+    buttons: [{ title: "Keep calm and carry on" }],
+    priority: 0
   });
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([
-      {
-        conditions: [
-          new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: { hostEquals: "developer.chrome.com" }
-          })
-        ],
-        actions: [new chrome.declarativeContent.ShowPageAction()]
-      }
-    ]);
+});
+
+chrome.notifications.onButtonClicked.addListener(function() {
+  chrome.storage.sync.get(["minutes"], function(item) {
+    chrome.browserAction.setBadgeText({ text: "ON" });
+    chrome.alarms.create({ delayInMinutes: item.minutes });
   });
 });
