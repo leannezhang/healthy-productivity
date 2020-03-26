@@ -1,18 +1,46 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 "use strict";
 
 let alarmName = "focusAlarm";
 let screen = "focusTimeDiv";
 
+let focusTimeRemaining;
+let breakTimeRemaining;
+let activityCategory;
+let activityLst;
+
+chrome.storage.sync.get(["focusTime"], function(result) {
+  focusTimeRemaining = parseInt(result.focusTime);
+  document.getElementById("focusTimeRemaining").innerHTML =
+    focusTimeRemaining + " mins";
+});
+
+chrome.storage.sync.get(["breakTime"], function(result) {
+  breakTimeRemaining = parseInt(result.breakTime);
+  document.getElementById("breakTimeRemaining").innerHTML =
+    breakTimeRemaining + " mins";
+});
+
+chrome.storage.sync.get(["activityCategory"], function(result) {
+  activityCategory = result.activityCategory;
+  console.log("Selected activity is " + activityCategory);
+});
+
+chrome.storage.sync.get(["activityLst"], function(result) {
+  activityLst = result.activityLst;
+  console.log("Provided activity list is " + activityLst);
+});
+
 function setAlarm(event) {
-  let minutes = parseFloat(event.target.value);
   alarmName = event.target.name;
-  chrome.alarms.create(alarmName, { delayInMinutes: minutes });
-  let badgeText = minutes.toString() + "m";
+  let badgeText;
+  if (alarmName === "focusAlarm") {
+    chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
+    badgeText = focusTimeRemaining + "m";
+  } else {
+    chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
+    badgeText = breakTimeRemaining + "m";
+  }
   chrome.browserAction.setBadgeText({ text: badgeText });
-  chrome.storage.sync.set({ minutes: minutes });
   window.close();
 }
 
@@ -22,6 +50,7 @@ function clearAlarm() {
   toggleFocusScreen();
 }
 
+// Fix me
 function toggleFocusScreen() {
   let screenDiv = document.getElementById(screen);
   screenDiv.classList.add("hide");

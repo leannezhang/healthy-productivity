@@ -31,23 +31,31 @@
     <!-- When break time is up show focus time screen -->
     <div id="focusTimeDiv" class="focusTimeDiv">
       <img src="../images/stay_focused.png" id="focusImage" />
+      <div>
+        <div>Time Remaining</div>
+        <h2 id="focusTimeRemaining"></h2>
+      </div>
       <div id="focusButtons">
         <!-- Once start is clicked, it will change to Pause button -->
-        <button id="startFocusTimerButton" name="focusAlarm" value="25">
+        <button id="startFocusTimerButton" name="focusAlarm">
           Start
         </button>
-        <button id="stopFocusTimerButton" name="focusAlarm">Stop</button>
+        <button id="stopFocusTimerButton" name="focusAlarm">Break</button>
       </div>
     </div>
     <!-- When focus time is up show break time screen -->
     <div id="breakTimeDiv" class="breakTimeDiv hide">
       <img src="../images/break.png" id="breakImage" />
+      <div>
+        <div>Time Remaining</div>
+        <h2 id="breakTimeRemaining"></h2>
+      </div>
       <div id="breakButtons">
         <!-- Once start is clicked, it will change to Pause button -->
-        <button id="startBreakTimerButton" name="breakAlarm" value="10">
+        <button id="startBreakTimerButton" name="breakAlarm">
           Start
         </button>
-        <button id="stopBreakTimerButton" name="breakAlarm">Stop</button>
+        <button id="stopBreakTimerButton" name="breakAlarm">Focus</button>
       </div>
     </div>
     <script src="../js/popup.js"></script>
