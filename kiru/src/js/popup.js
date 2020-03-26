@@ -41,13 +41,14 @@ function setAlarm(event) {
     badgeText = breakTimeRemaining + "m";
   }
   chrome.browserAction.setBadgeText({ text: badgeText });
-  chrome.runtime.sendMessage('', {
-    type: 'notification',
+  chrome.runtime.sendMessage("", {
+    type: "notification",
     options: {
-      title: 'Time to focus',
-      message: 'Time to focus now. You will get a notification when its time for your break!',
-      iconUrl: 'src/images/get_started128.png',
-      type: 'basic'
+      title: "Time to focus",
+      message:
+        "Time to focus now. You will get a notification when its time for your break!",
+      iconUrl: "src/images/get_started128.png",
+      type: "basic"
     }
   });
   window.close();
