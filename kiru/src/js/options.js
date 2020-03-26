@@ -66,24 +66,30 @@ function setEventListeners() {
 
   document.getElementById('stretching-btn').addEventListener("click", e => {
     var text = document.getElementById("stretching-url").value;
-    var li = document.createElement('li');
-    li.innerHTML = text;
-    document.getElementById('stretching-list').appendChild(li);
+    if(/\S/.test(text)) {
+      addListElement('stretching-list', text);
+    }
   });
 
   document.getElementById('meditation-btn').addEventListener("click", e => {
     var text = document.getElementById("meditation-url").value;
-    var li = document.createElement('li');
-    li.innerHTML = text;
-    document.getElementById('meditation-list').appendChild(li);
+    if(/\S/.test(text)) {
+      addListElement('meditation-list', text);
+    }
   });
 
   document.getElementById('fitness-btn').addEventListener("click", e => {
     var text = document.getElementById("fitness-url").value;
-    var li = document.createElement('li');
-    li.innerHTML = text;
-    document.getElementById('fitness-list').appendChild(li);
+    if(/\S/.test(text)) {
+      addListElement('fitness-list', text);
+    }
   });
+}
+
+function addListElement(id, text) {
+  var li = document.createElement('li');
+  li.innerHTML = text;
+  document.getElementById(id).appendChild(li);
 }
 
 function resetDefaults() {
