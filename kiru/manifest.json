@@ -23,6 +23,17 @@
     "48": "src/images/get_started48.png",
     "128": "src/images/get_started128.png"
   },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": [
+        "src/js/popup.js"
+      ]
+    }
+  ],
+  "web_accessible_resources":[
+    "src/images/get_started128.png"
+  ],
   "options_page": "src/views/options.html",
   "manifest_version": 2
 }

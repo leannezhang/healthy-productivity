@@ -41,6 +41,15 @@ function setAlarm(event) {
     badgeText = breakTimeRemaining + "m";
   }
   chrome.browserAction.setBadgeText({ text: badgeText });
+  chrome.runtime.sendMessage('', {
+    type: 'notification',
+    options: {
+      title: 'Just wanted to notify you',
+      message: 'How great it is!',
+      iconUrl: 'src/images/get_started128.png',
+      type: 'basic'
+    }
+  });
   window.close();
 }
 
