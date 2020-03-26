@@ -44,8 +44,8 @@ function setAlarm(event) {
   chrome.runtime.sendMessage('', {
     type: 'notification',
     options: {
-      title: 'Just wanted to notify you',
-      message: 'How great it is!',
+      title: 'Time to focus',
+      message: 'Time to focus now. You will get a notification when its time for your break!',
       iconUrl: 'src/images/get_started128.png',
       type: 'basic'
     }
