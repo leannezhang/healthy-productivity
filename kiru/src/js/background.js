@@ -1,8 +1,15 @@
 "use strict";
 
+// Initialized default timers
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.sync.set({ view: "focusView" }, function() {
     console.log("The color is focus view.");
+  });
+  chrome.storage.sync.set({ breakTime: 5 }, function() {
+    console.log("breakTime is 5");
+  });
+  chrome.storage.sync.set({ focusTime: 30 }, function() {
+    console.log("focusTime is 30");
   });
 });
 

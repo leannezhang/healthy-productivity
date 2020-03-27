@@ -108,12 +108,12 @@ function resetDefaults() {
 
 function saveOptions() {
   const focusTime = document.getElementById("focus-time").value;
-  chrome.storage.sync.set({ focusTime: focusTime || 30 }, function() {
+  chrome.storage.sync.set({ focusTime: focusTime }, function() {
     console.log("focusTime is " + focusTime);
   });
 
   const breakTime = document.getElementById("break-time").value;
-  chrome.storage.sync.set({ breakTime: breakTime || 5 }, function() {
+  chrome.storage.sync.set({ breakTime: breakTime }, function() {
     console.log("breakTime is " + breakTime);
   });
 

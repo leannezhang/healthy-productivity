@@ -8,10 +8,22 @@ let breakTimeRemaining;
 let activityCategory;
 let activityLst;
 let view;
+let showView;
+let hideView;
 
 chrome.storage.sync.get(["view"], function(result) {
   view = result.view;
-  alert(view);
+  if (view === "focusView") {
+    hideView = document.getElementById("breakTimeDiv");
+    hideView.classList.add("hide");
+    showView = document.getElementById("focusTimeDiv");
+    showView.classList.remove("hide");
+  } else {
+    showView = document.getElementById("breakTimeDiv");
+    showView.classList.remove("hide");
+    hideView = document.getElementById("focusTimeDiv");
+    hideView.classList.add("hide");
+  }
 });
 
 chrome.storage.sync.get(["focusTime"], function(result) {
@@ -40,7 +52,6 @@ function setAlarm(event) {
   alarmName = event.target.name;
   let badgeText;
   if (alarmName === "focusAlarm") {
-    screen = "focusTimeDiv";
     chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
     badgeText = focusTimeRemaining + "m";
     chrome.runtime.sendMessage("", {
@@ -54,7 +65,6 @@ function setAlarm(event) {
       }
     });
   } else {
-    screen = "breakTimeDiv";
     chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
     badgeText = breakTimeRemaining + "m";
     chrome.runtime.sendMessage("", {
@@ -77,20 +87,6 @@ function clearAlarm() {
   chrome.alarms.clearAll();
 }
 
-// Fix me
-function toggleFocusScreen() {
-  alert("im here");
-  let screenDiv = document.getElementById(screen);
-  screenDiv.classList.add("hide");
-  let showScreenDiv;
-  if (screenDiv === "focusTimeDiv") {
-    showScreenDiv = document.getElementById("breakTimeDiv");
-  } else {
-    showScreenDiv = document.getElementById("focusTimeDiv");
-  }
-  showScreenDiv.classList.remove("hide");
-}
-
 //An Alarm delay of less than the minimum 1 minute will fire
 // in approximately 1 minute incriments if released
 document
@@ -106,7 +102,3 @@ document
 document
   .getElementById("stopBreakTimerButton")
   .addEventListener("click", clearAlarm);
-
-document
-  .getElementById("switchView")
-  .addEventListener("click", toggleFocusScreen);
