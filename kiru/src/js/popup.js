@@ -30,6 +30,16 @@ chrome.storage.sync.get(["startTime"], function(result) {
   startTime = result.startTime;
 });
 
+chrome.storage.sync.get(["activityCategory"], function(result) {
+  activityCategory = result.activityCategory;
+  console.log("Selected activity is " + activityCategory);
+});
+
+chrome.storage.sync.get(["activityLst"], function(result) {
+  activityLst = result.activityLst;
+  console.log("Provided activity list is " + activityLst);
+});
+
 chrome.storage.sync.get(["view"], function(result) {
   view = result.view;
   if (view === "focusView") {
@@ -42,17 +52,23 @@ chrome.storage.sync.get(["view"], function(result) {
     showView.classList.remove("hide");
     hideView = document.getElementById("focusTimeDiv");
     hideView.classList.add("hide");
+
+    chrome.storage.sync.get(["activityLst"], function(result) {
+      activityLst = result.activityLst;
+      console.log("Provided activity list is " + activityLst);
+    });
+
+    chrome.storage.sync.get(["activityCategory"], function(result) {
+      activityCategory = result.activityCategory;
+      console.log("Selected activity is " + activityCategory);
+    });
+
+    var a = document.createElement("a");
+    a.setAttribute('href', activityLst);
+    var breakActivityDiv = document.getElementById("breakActivityDiv")
+    breakActivityDiv.innerHTML = "Link to <b>" + activityCategory + "</b>: <br/> <a href='" + activityLst + "'>" + activityCategory + " Video</a><br/>";
+//    breakActivityDiv.appendChild(a);
   }
-});
-
-chrome.storage.sync.get(["activityCategory"], function(result) {
-  activityCategory = result.activityCategory;
-  console.log("Selected activity is " + activityCategory);
-});
-
-chrome.storage.sync.get(["activityLst"], function(result) {
-  activityLst = result.activityLst;
-  console.log("Provided activity list is " + activityLst);
 });
 
 resetFocusTimerView();
