@@ -7,6 +7,24 @@ let focusTimeRemaining;
 let breakTimeRemaining;
 let activityCategory;
 let activityLst;
+let view;
+let showView;
+let hideView;
+
+chrome.storage.sync.get(["view"], function(result) {
+  view = result.view;
+  if (view === "focusView") {
+    hideView = document.getElementById("breakTimeDiv");
+    hideView.classList.add("hide");
+    showView = document.getElementById("focusTimeDiv");
+    showView.classList.remove("hide");
+  } else {
+    showView = document.getElementById("breakTimeDiv");
+    showView.classList.remove("hide");
+    hideView = document.getElementById("focusTimeDiv");
+    hideView.classList.add("hide");
+  }
+});
 
 chrome.storage.sync.get(["focusTime"], function(result) {
   focusTimeRemaining = parseInt(result.focusTime);
@@ -36,35 +54,37 @@ function setAlarm(event) {
   if (alarmName === "focusAlarm") {
     chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
     badgeText = focusTimeRemaining + "m";
+    chrome.runtime.sendMessage("", {
+      type: "notification",
+      options: {
+        title: "Time to focus",
+        message:
+          "Time to focus now. You will get a notification when its time for your break!",
+        iconUrl: "src/images/get_started128.png",
+        type: "basic"
+      }
+    });
   } else {
     chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
     badgeText = breakTimeRemaining + "m";
+    chrome.runtime.sendMessage("", {
+      type: "notification",
+      options: {
+        title: "Time for a break",
+        message:
+          "Time to a break now. You will get a notification when the break is up.",
+        iconUrl: "src/images/get_started128.png",
+        type: "basic"
+      }
+    });
   }
   chrome.browserAction.setBadgeText({ text: badgeText });
-  chrome.runtime.sendMessage('', {
-    type: 'notification',
-    options: {
-      title: 'Time to focus',
-      message: 'Time to focus now. You will get a notification when its time for your break!',
-      iconUrl: 'src/images/get_started128.png',
-      type: 'basic'
-    }
-  });
   window.close();
 }
 
 function clearAlarm() {
   chrome.browserAction.setBadgeText({ text: "" });
   chrome.alarms.clearAll();
-  toggleFocusScreen();
-}
-
-// Fix me
-function toggleFocusScreen() {
-  let screenDiv = document.getElementById(screen);
-  screenDiv.classList.add("hide");
-  let showScreenDiv = document.getElementById("breakTimeDiv");
-  showScreenDiv.classList.remove("hide");
 }
 
 //An Alarm delay of less than the minimum 1 minute will fire
