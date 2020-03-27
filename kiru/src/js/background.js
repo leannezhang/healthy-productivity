@@ -2,14 +2,13 @@
 
 // Initialized default timers
 chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({ view: "focusView" }, function() {
-    console.log("The color is focus view.");
-  });
-  chrome.storage.sync.set({ breakTime: 5 }, function() {
-    console.log("breakTime is 5");
-  });
-  chrome.storage.sync.set({ focusTime: 30 }, function() {
-    console.log("focusTime is 30");
+  chrome.storage.sync.set({
+    view: "focusView",
+    breakTime: 5,
+    focusTime: 30,
+    // Can combine timerStarted and startTime into one variable
+    timerStarted: false,
+    startTime: 0
   });
 });
 
@@ -23,9 +22,12 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
   // When the focus alarm times up
   if (alarms.name === "focusAlarm") {
     // seems like when the windows is not closed, the notification bar would not appear
-    chrome.storage.sync.set({ view: "breakView" }, function() {
-      console.log("The view is breakView");
-    });
+    chrome.storage.sync.set(
+      { view: "breakView", timerStarted: false, startTime: 0 },
+      function() {
+        console.log("The view is breakView");
+      }
+    );
     chrome.notifications.create({
       title: "Time for a break",
       message:
@@ -35,9 +37,12 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
     });
     // When the break alarm times up
   } else {
-    chrome.storage.sync.set({ view: "focusView" }, function() {
-      console.log("The view id focusView");
-    });
+    chrome.storage.sync.set(
+      { view: "focusView", timerStarted: false, startTime: 0 },
+      function() {
+        console.log("The view id focusView");
+      }
+    );
     chrome.notifications.create({
       title: "Break is over",
       message: "Break is over. Time to focus now! Click on the timer to start.",
