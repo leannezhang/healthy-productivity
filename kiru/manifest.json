@@ -2,7 +2,10 @@
   "name": "healthyProductivity",
   "version": "1.0",
   "description": "Extension to remind you to take much needed break in between your work!",
-  "permissions": ["alarms", "notifications", "storage"],
+    "permissions": ["alarms", "notifications", "storage"],
+  "storage": {
+    "managed_schema": "schema.json"
+  },
   "background": {
     "scripts": ["src/js/background.js"],
     "persistent": false

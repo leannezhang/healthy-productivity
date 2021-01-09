@@ -10,12 +10,14 @@ function setEventListeners() {
     resetDefaults();
   });
 
-  document.getElementById("fitness").addEventListener("click", e => {
-    document.getElementById("fitness-activities").style.display = "block";
-    document.getElementById("meditation-activities").style.display = "none";
-    document.getElementById("stretching-activities").style.display = "none";
-    document.getElementById("stretching-list").innerHTML = "";
-    document.getElementById("meditation-list").innerHTML = "";
+  document.getElementById("test-button").addEventListener("click", () => {
+    // uses local storage
+
+    console.log("calling test button");
+    var counter = localStorage.getItem("test-key") || 0;
+    counter++;
+    console.log("counter is " + counter);
+    localStorage.setItem("test-key", counter);
   });
 
   document.getElementById("meditation").addEventListener("click", e => {
