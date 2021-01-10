@@ -1,5 +1,21 @@
 let domActivities = document.getElementsByName("activities");
 
+class UserProfile {
+  constructor(gender, age, activitySpace, activityImpact) {
+    this.gender = gender;
+    this.age = age;
+    this.activitySpace = activitySpace;
+    this.activityImpact = activityImpact;
+  }
+  read() {
+    return localStorage.getItem("userProfile")
+  }
+  write() {
+    return localStorage.setItem("userProfile", this)
+  }
+}
+
+
 function setEventListeners() {
   document.getElementById("options-form").addEventListener("submit", e => {
     e.preventDefault();
@@ -8,16 +24,6 @@ function setEventListeners() {
 
   document.getElementById("reset-options").addEventListener("click", () => {
     resetDefaults();
-  });
-
-  document.getElementById("test-button").addEventListener("click", () => {
-    // uses local storage
-
-    console.log("calling test button");
-    var counter = localStorage.getItem("test-key") || 0;
-    counter++;
-    console.log("counter is " + counter);
-    localStorage.setItem("test-key", counter);
   });
 
   document.getElementById("meditation").addEventListener("click", e => {
@@ -110,19 +116,19 @@ function resetDefaults() {
 
 function saveOptions() {
   const focusTime = document.getElementById("focus-time").value;
-  chrome.storage.sync.set({ focusTime: focusTime }, function() {
+  chrome.storage.sync.set({ focusTime: focusTime }, function () {
     console.log("focusTime is " + focusTime);
   });
 
   const breakTime = document.getElementById("break-time").value;
-  chrome.storage.sync.set({ breakTime: breakTime }, function() {
+  chrome.storage.sync.set({ breakTime: breakTime }, function () {
     console.log("breakTime is " + breakTime);
   });
 
   const activityCategory = getCheckedValue(domActivities);
 
   if (typeof activityCategory !== "undefined") {
-    chrome.storage.sync.set({ activityCategory: activityCategory }, function() {
+    chrome.storage.sync.set({ activityCategory: activityCategory }, function () {
       console.log("Selected activity is " + activityCategory);
     });
 
@@ -136,7 +142,7 @@ function saveOptions() {
 
     //    const activities = document.getElementById(activityCategory + "-activities-lst").value;
     //    const activityLst = activities.split(/[ ,\n]/);
-    chrome.storage.sync.set({ activityLst: activityLst }, function() {
+    chrome.storage.sync.set({ activityLst: activityLst }, function () {
       console.log("Provided activity list is " + activityLst);
     });
   }
@@ -151,3 +157,6 @@ function getCheckedValue(radioElement) {
 }
 
 setEventListeners();
+var user = new UserProfile("female", 20, [], [])
+user.write()
+
