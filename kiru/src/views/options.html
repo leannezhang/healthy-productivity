@@ -60,6 +60,22 @@
     <button id="test-button" class="btn btn-primary green button">Test</button>
   </div>
 </form>
+<form id="survey-form">
+  <div class="form-group">
+    <div>
+	<h3>Gender</h3>
+	<input type="radio" class="form-control" name="gender" id="gender-female" value="female"/>
+	<label for="gender" class="control-label">Female</label><br/>
+	<input type="radio" class="form-control" name="gender" id="gender-male" value="male"/>
+	<label for="gender" class="control-label">Male</label><br/>
+    </div>
+    <div id="age-input">
+	<h3>Age</h3>
+	<label for="age">Age:</label>
+	<!-- user minimun age should be 10 -->
+	<input type="number" id="age" name="age" min="10" max="200">
+    </div>
+</form>
 
 </body>
 </html>
