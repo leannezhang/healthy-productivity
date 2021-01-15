@@ -1,4 +1,41 @@
 let domActivities = document.getElementsByName("activities");
+let userProfile = null;
+
+class UserProfile {
+  constructor(gender, age, activitySpace, activityImpact) {
+    this.gender = gender;
+    this.age = age;
+    this.activitySpace = activitySpace;
+    this.activityImpact = activityImpact;
+  }
+  read() {
+    console.log("Reading UserProfile")
+    return localStorage.getItem("userProfile")
+  }
+  recommendExercise(){
+     // data massage and do recommendations
+  }
+
+  write() {
+    console.log("Writing UserProfile")
+
+    let userProfileJson = {
+      gender:"",
+      age:"",
+      activitySpace:[],
+      activityImpact:[],
+    }
+    userProfileJson.gender = this.gender;
+    userProfileJson.age = this.age;
+    userProfileJson.activitySpace = this.activitySpace;
+    userProfileJson.activityImpact = this.activityImpact;
+    let stringified = JSON.stringify(userProfileJson);
+
+    console.log("userProfileJson: ",stringified, userProfileJson);
+    return localStorage.setItem("userProfile", stringified);
+  }
+}
+
 
 function setEventListeners() {
   document.getElementById("options-form").addEventListener("submit", e => {
@@ -10,12 +47,15 @@ function setEventListeners() {
     resetDefaults();
   });
 
-  document.getElementById("fitness").addEventListener("click", e => {
-    document.getElementById("fitness-activities").style.display = "block";
-    document.getElementById("meditation-activities").style.display = "none";
-    document.getElementById("stretching-activities").style.display = "none";
-    document.getElementById("stretching-list").innerHTML = "";
-    document.getElementById("meditation-list").innerHTML = "";
+  document.getElementById("update-button").addEventListener("click", () => {
+    // collect all input and store them
+    let gender = document.querySelector('input[name=gender]:checked').value
+    let age = document.querySelector("input[name=age]").value;
+    let activitySpace = document.querySelector('input[name=activity-space]:checked').value;
+    let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
+    // load everything
+    userProfile = new UserProfile(gender, age , activitySpace, activityImpact)
+    userProfile.write()
   });
 
   document.getElementById("meditation").addEventListener("click", e => {
@@ -108,19 +148,19 @@ function resetDefaults() {
 
 function saveOptions() {
   const focusTime = document.getElementById("focus-time").value;
-  chrome.storage.sync.set({ focusTime: focusTime }, function() {
+  chrome.storage.sync.set({ focusTime: focusTime }, function () {
     console.log("focusTime is " + focusTime);
   });
 
   const breakTime = document.getElementById("break-time").value;
-  chrome.storage.sync.set({ breakTime: breakTime }, function() {
+  chrome.storage.sync.set({ breakTime: breakTime }, function () {
     console.log("breakTime is " + breakTime);
   });
 
   const activityCategory = getCheckedValue(domActivities);
 
   if (typeof activityCategory !== "undefined") {
-    chrome.storage.sync.set({ activityCategory: activityCategory }, function() {
+    chrome.storage.sync.set({ activityCategory: activityCategory }, function () {
       console.log("Selected activity is " + activityCategory);
     });
 
@@ -134,7 +174,7 @@ function saveOptions() {
 
     //    const activities = document.getElementById(activityCategory + "-activities-lst").value;
     //    const activityLst = activities.split(/[ ,\n]/);
-    chrome.storage.sync.set({ activityLst: activityLst }, function() {
+    chrome.storage.sync.set({ activityLst: activityLst }, function () {
       console.log("Provided activity list is " + activityLst);
     });
   }
@@ -149,3 +189,5 @@ function getCheckedValue(radioElement) {
 }
 
 setEventListeners();
+
+
