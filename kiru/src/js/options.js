@@ -49,7 +49,6 @@ function setEventListeners() {
 
   document.getElementById("update-button").addEventListener("click", () => {
     // collect all input and store them
-    console.log("clicked update")
     let gender = document.querySelector('input[name=gender]:checked').value
     let age = document.querySelector("input[name=age]").value;
     let activitySpace = document.querySelector('input[name=activity-space]:checked').value;
