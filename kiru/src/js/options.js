@@ -1,4 +1,5 @@
 let domActivities = document.getElementsByName("activities");
+let userProfile = null;
 
 class UserProfile {
   constructor(gender, age, activitySpace, activityImpact) {
@@ -8,10 +9,30 @@ class UserProfile {
     this.activityImpact = activityImpact;
   }
   read() {
+    console.log("Reading UserProfile")
     return localStorage.getItem("userProfile")
   }
+  recommendExercise(){
+     // data massage and do recommendations
+  }
+
   write() {
-    return localStorage.setItem("userProfile", this)
+    console.log("Writing UserProfile")
+
+    let userProfileJson = {
+      gender:"",
+      age:"",
+      activitySpace:[],
+      activityImpact:[],
+    }
+    userProfileJson.gender = this.gender;
+    userProfileJson.age = this.age;
+    userProfileJson.activitySpace = this.activitySpace;
+    userProfileJson.activityImpact = this.activityImpact;
+    let stringified = JSON.stringify(userProfileJson);
+
+    console.log("userProfileJson: ",stringified, userProfileJson);
+    return localStorage.setItem("userProfile", stringified);
   }
 }
 
@@ -24,6 +45,18 @@ function setEventListeners() {
 
   document.getElementById("reset-options").addEventListener("click", () => {
     resetDefaults();
+  });
+
+  document.getElementById("update-button").addEventListener("click", () => {
+    // collect all input and store them
+    console.log("clicked update")
+    let gender = document.querySelector('input[name=gender]:checked').value
+    let age = document.querySelector("input[name=age]").value;
+    let activitySpace = document.querySelector('input[name=activity-space]:checked').value;
+    let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
+    // load everything
+    userProfile = new UserProfile(gender, age , activitySpace, activityImpact)
+    userProfile.write()
   });
 
   document.getElementById("meditation").addEventListener("click", e => {
@@ -157,6 +190,5 @@ function getCheckedValue(radioElement) {
 }
 
 setEventListeners();
-var user = new UserProfile("female", 20, [], [])
-user.write()
+
 
