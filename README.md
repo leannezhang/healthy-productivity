@@ -5,7 +5,8 @@ The Extension Management page can also be opened by clicking on the Chrome menu,
 - Enable Developer Mode by clicking the toggle switch next to Developer mode.
 - Click the LOAD UNPACKED button and select this directory.
 
+# About
 
 Options.html 
 - Allows you to set timer configuration
-- Right click on the chrome extension icon and select "Options".
+- To get to this page, right click on the chrome extension icon and select "Options".
