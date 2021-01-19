@@ -1,17 +1,25 @@
 let domActivities = document.getElementsByName("activities");
-let userProfile = null;
-
 class UserProfile {
-  constructor(gender, age, activitySpace, activityImpact) {
+  constructor(gender="", age="", activitySpace="", activityImpact="") {
     this.gender = gender;
     this.age = age;
     this.activitySpace = activitySpace;
     this.activityImpact = activityImpact;
   }
+
   read() {
     console.log("Reading UserProfile")
-    return localStorage.getItem("userProfile")
+    let userProfileStr = localStorage.getItem("userProfile");
+    let userProfile;
+    if (userProfileStr) {
+      userProfile = JSON.parse(userProfileStr);
+      this.gender = userProfile.gender;
+      this.age = userProfile.age;
+      this.activitySpace = userProfile.activitySpace;
+      this.activityImpact = userProfile.activityImpact;
+    }
   }
+
   recommendExercise(){
      // data massage and do recommendations
   }
@@ -34,8 +42,63 @@ class UserProfile {
     console.log("userProfileJson: ",stringified, userProfileJson);
     return localStorage.setItem("userProfile", stringified);
   }
+
 }
 
+let userProfile = new UserProfile();
+function readFromLocalStorage() {
+  userProfile.read();
+
+  // Get input elements
+  let femaleGender = document.querySelector("input[id=gender-female]")
+  let maleGender = document.querySelector("input[id=gender-male]")
+  let age = document.querySelector("input[id=age-input]")
+  let activitySpaceSmall = document.querySelector("input[id=activity-space-small]")
+  let activitySpaceMedium = document.querySelector("input[id=activity-space-medium]")
+  let activitySpaceLarge = document.querySelector("input[id=activity-space-large]")
+  let highImpactActivity = document.querySelector("input[id=activity-high-impact]")
+  let lowImpactActivity = document.querySelector("input[id=activity-low-impact]")
+
+  // Assign input element
+  switch(userProfile.gender) {
+    case 'female': {
+      femaleGender.checked = true;
+    }
+    case 'male': {
+      maleGender.checked = true;
+    }
+  }
+  
+  if (userProfile.age) {
+    age.value = userProfile.age;
+  }
+
+  switch(userProfile.activitySpace) {
+    case 'small': {
+      activitySpaceSmall.checked = true;
+      break;
+    }
+    case 'medium':{
+      activitySpaceMedium.checked = true;
+      break;
+    }
+    case 'large': {
+      activitySpaceLarge.checked = true;
+      break;
+    }
+  }
+
+  switch(userProfile.activityImpact) {
+    case 'high-impact': {
+      highImpactActivity.checked = true;
+      break;
+    }
+    case 'low-impact':{
+      lowImpactActivity.checked = true;
+      break;
+    }
+  }
+}
 
 function setEventListeners() {
   document.getElementById("options-form").addEventListener("submit", e => {
@@ -47,8 +110,9 @@ function setEventListeners() {
     resetDefaults();
   });
 
-  document.getElementById("update-button").addEventListener("click", () => {
+  document.getElementById("update-button").addEventListener("click", (e) => {
     // collect all input and store them
+    e.preventDefault();
     let gender = document.querySelector('input[name=gender]:checked').value
     let age = document.querySelector("input[name=age]").value;
     let activitySpace = document.querySelector('input[name=activity-space]:checked').value;
@@ -188,6 +252,7 @@ function getCheckedValue(radioElement) {
   }
 }
 
+readFromLocalStorage();
 setEventListeners();
 
 
