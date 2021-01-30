@@ -1,10 +1,18 @@
 let domActivities = document.getElementsByName("activities");
 class UserProfile {
-  constructor(gender="", age="", activitySpace="", activityImpact="") {
+  constructor(
+    gender = "",
+    age = "",
+    activitySpace = "",
+    activityImpact = "",
+    goal = "",
+    equipments = []) {
     this.gender = gender;
     this.age = age;
     this.activitySpace = activitySpace;
     this.activityImpact = activityImpact;
+    this.goal = goal;
+    this.equipments = equipments;
   }
 
   read() {
@@ -17,36 +25,45 @@ class UserProfile {
       this.age = userProfile.age;
       this.activitySpace = userProfile.activitySpace;
       this.activityImpact = userProfile.activityImpact;
+      this.goal = userProfile.goal;
+      this.equipments = userProfile.equipments;
     }
   }
 
-  recommendExercise(){
-     // data massage and do recommendations
+  recommendExercise() {
+    // data massage and do recommendations
   }
 
   write() {
     console.log("Writing UserProfile")
 
     let userProfileJson = {
-      gender:"",
-      age:"",
-      activitySpace:[],
-      activityImpact:[],
+      gender: "",
+      age: "",
+      activitySpace: [],
+      activityImpact: [],
+      goal: "",
+      equipments: [],
     }
     userProfileJson.gender = this.gender;
     userProfileJson.age = this.age;
     userProfileJson.activitySpace = this.activitySpace;
     userProfileJson.activityImpact = this.activityImpact;
+    userProfileJson.goal = this.goal;
+    userProfileJson.equipments = this.equipments;
     let stringified = JSON.stringify(userProfileJson);
 
-    console.log("userProfileJson: ",stringified, userProfileJson);
+    console.log("userProfileJson: ", stringified, userProfileJson);
     return localStorage.setItem("userProfile", stringified);
   }
-
 }
 
 let userProfile = new UserProfile();
 function readFromLocalStorage() {
+  /*
+    Load UserProfile from localStorage
+    pre-populate html fields
+  */
   userProfile.read();
 
   // Get input elements
@@ -58,9 +75,13 @@ function readFromLocalStorage() {
   let activitySpaceLarge = document.querySelector("input[id=activity-space-large]")
   let highImpactActivity = document.querySelector("input[id=activity-high-impact]")
   let lowImpactActivity = document.querySelector("input[id=activity-low-impact]")
+  let goalsValue = document.querySelector("select[id=goals]")
+
+  // TODO (liyangz): need to make the field checkbox
+  let equipmentsValue = document.querySelector("select[id=equipments]").value
 
   // Assign input element
-  switch(userProfile.gender) {
+  switch (userProfile.gender) {
     case 'female': {
       femaleGender.checked = true;
     }
@@ -68,17 +89,17 @@ function readFromLocalStorage() {
       maleGender.checked = true;
     }
   }
-  
+
   if (userProfile.age) {
     age.value = userProfile.age;
   }
 
-  switch(userProfile.activitySpace) {
+  switch (userProfile.activitySpace) {
     case 'small': {
       activitySpaceSmall.checked = true;
       break;
     }
-    case 'medium':{
+    case 'medium': {
       activitySpaceMedium.checked = true;
       break;
     }
@@ -88,16 +109,18 @@ function readFromLocalStorage() {
     }
   }
 
-  switch(userProfile.activityImpact) {
+  switch (userProfile.activityImpact) {
     case 'high-impact': {
       highImpactActivity.checked = true;
       break;
     }
-    case 'low-impact':{
+    case 'low-impact': {
       lowImpactActivity.checked = true;
       break;
     }
   }
+
+  goalsValue = userProfile.goal
 }
 
 function setEventListeners() {
@@ -117,8 +140,10 @@ function setEventListeners() {
     let age = document.querySelector("input[name=age]").value;
     let activitySpace = document.querySelector('input[name=activity-space]:checked').value;
     let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
+    let goalsValue = document.querySelector("select[id=goals]").value
     // load everything
-    userProfile = new UserProfile(gender, age , activitySpace, activityImpact)
+    // TODO (liyangz) fix equipment. pass in an array
+    userProfile = new UserProfile(gender, age, activitySpace, activityImpact, goalsValue, [])
     userProfile.write()
   });
 

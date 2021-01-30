@@ -4,7 +4,7 @@
   "description": "Extension to remind you to take much needed break in between your work!",
   "permissions": ["alarms", "notifications", "storage"],
   "background": {
-    "scripts": ["src/js/background.js"],
+    "scripts": ["src/js/background.js", "src/js/hot-reload.js"],
     "persistent": false
   },
   "browser_action": {
