@@ -70,9 +70,6 @@ function readFromLocalStorage() {
   let femaleGender = document.querySelector("input[id=gender-female]")
   let maleGender = document.querySelector("input[id=gender-male]")
   let age = document.querySelector("input[id=age-input]")
-  let activitySpaceSmall = document.querySelector("input[id=activity-space-small]")
-  let activitySpaceMedium = document.querySelector("input[id=activity-space-medium]")
-  let activitySpaceLarge = document.querySelector("input[id=activity-space-large]")
   let highImpactActivity = document.querySelector("input[id=activity-high-impact]")
   let lowImpactActivity = document.querySelector("input[id=activity-low-impact]")
   let goalsValue = document.querySelector("select[id=goals]")
@@ -138,12 +135,11 @@ function setEventListeners() {
     e.preventDefault();
     let gender = document.querySelector('input[name=gender]:checked').value
     let age = document.querySelector("input[name=age]").value;
-    let activitySpace = document.querySelector('input[name=activity-space]:checked').value;
     let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
     let goalsValue = document.querySelector("select[id=goals]").value
     // load everything
     // TODO (liyangz) fix equipment. pass in an array
-    userProfile = new UserProfile(gender, age, activitySpace, activityImpact, goalsValue, [])
+    userProfile = new UserProfile(gender, age, activityImpact, goalsValue, [])
     userProfile.write()
   });
 
