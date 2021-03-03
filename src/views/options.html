@@ -68,8 +68,8 @@
         </label>
         <select name="goals" id="goals">
           <option value="strength">Strength </option>
-          <option value="endurance">Endurance</option>
-          <option value="mobility">Mobility</option>
+          <option value="cardio">Cardio</option>
+          <option value="meditation">Meditation</option>
           <option value="flexibility">Flexibility</option>
         </select>
         <label for="equipment">
@@ -77,14 +77,14 @@
         </label>
         <select name="equipments" id="equipments">
           <option value="dumbbells">Dumbbells</option>
-          <option value="kettle-bells">Kettle Bells</option>
+          <option value="kettlebells">Kettlebells</option>
           <option value="resistance-bands">Resistance Bands</option>
           <option value="pull-up-bar">Pull Up Bar</option>
           <option value="parallettes">Parallettes</option>
           <option value="gymnastic-rings">Gymnastic Rings</option>
           <option value="yoga-mat">Yoga Mat</option>
           <option value="foam-roll">Foam Roll</option>
-          <option value="body-only">Body Only</option>
+          <option value="body-only" selected>Body Only</option>
         </select>
       <div id="gender-input">
         <h3>Gender</h3>
@@ -98,28 +98,15 @@
           <!-- user minimun age should be 10 -->
           <input type="number" id="age-input" name="age" min="10" max="200">
       </div>
-      <div id="activity-space-input">
-        <h3>Activity Space</h3>
-        <input type="radio" class="form-control" name="activity-space" id="activity-space-small" value="small" />
-        <label for="activity-space" class="control-label">small</label><br />
-        <input type="radio" class="form-control" name="activity-space" id="activity-space-medium" value="medium" />
-        <label for="activity-space" class="control-label">medium</label><br />
-        <input type="radio" class="form-control" name="activity-space" id="activity-space-large" value="large" />
-        <label for="activity-space" class="control-label">large</label><br />
-      </div>
       <div id="activity-impact-input">
         <h3>Activity Impact</h3>
         <h4>Pick low impact if you live in an apartment but do not wish to disturb your neighbours.</h4>
-        <input type="radio" class="form-control" name="activity-impact" id="activity-high-impact" value="high-impact" />
+        <input type="radio" class="form-control" name="activity-impact" id="activity-high-impact" value="high" />
         <label for="activity-impact" class="control-label">high-impact</label><br />
-        <input type="radio" class="form-control" name="activity-impact" id="activity-low-impact" value="low-impact" />
+        <input type="radio" class="form-control" name="activity-impact" id="activity-low-impact" value="low" />
         <label for="activity-impact" class="control-label">low-impact</label><br />
       </div>
       <button id="update-button" type="update" class="btn btn-primary grey button">Update</button>
   </form>
-
-
-
 </body>
-
 </html>
