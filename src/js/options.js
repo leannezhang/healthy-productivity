@@ -3,13 +3,11 @@ class UserProfile {
   constructor(
     gender = "",
     age = "",
-    activitySpace = "",
     activityImpact = "",
     goal = "",
     equipments = []) {
     this.gender = gender;
     this.age = age;
-    this.activitySpace = activitySpace;
     this.activityImpact = activityImpact;
     this.goal = goal;
     this.equipments = equipments;
@@ -23,7 +21,6 @@ class UserProfile {
       userProfile = JSON.parse(userProfileStr);
       this.gender = userProfile.gender;
       this.age = userProfile.age;
-      this.activitySpace = userProfile.activitySpace;
       this.activityImpact = userProfile.activityImpact;
       this.goal = userProfile.goal;
       this.equipments = userProfile.equipments;
@@ -40,14 +37,12 @@ class UserProfile {
     let userProfileJson = {
       gender: "",
       age: "",
-      activitySpace: [],
       activityImpact: [],
       goal: "",
       equipments: [],
     }
     userProfileJson.gender = this.gender;
     userProfileJson.age = this.age;
-    userProfileJson.activitySpace = this.activitySpace;
     userProfileJson.activityImpact = this.activityImpact;
     userProfileJson.goal = this.goal;
     userProfileJson.equipments = this.equipments;
@@ -89,21 +84,6 @@ function readFromLocalStorage() {
 
   if (userProfile.age) {
     age.value = userProfile.age;
-  }
-
-  switch (userProfile.activitySpace) {
-    case 'small': {
-      activitySpaceSmall.checked = true;
-      break;
-    }
-    case 'medium': {
-      activitySpaceMedium.checked = true;
-      break;
-    }
-    case 'large': {
-      activitySpaceLarge.checked = true;
-      break;
-    }
   }
 
   switch (userProfile.activityImpact) {
