@@ -8,12 +8,13 @@
 <link rel="stylesheet" href="../css/options.css" />
 <script type="module" src="../js/options.js"></script>
 <script type="text/javascript" src="../js/recommendationService.js"></script>
-
+<!-- 1. Remove unused components
+        1.2 add auto format 
+        1.3 styling
+     2. Fix add listener on save
+     3. Map frontend value to recommendation service -->
 <body>
   <form id="options-form">
-    <div class="form-group">
-      <h2><u>BreakTime Options</u></h2>
-    </div>
     <div class="form-group" id="focusDiv">
       <h3>Focus time (in minutes)</h3>
       <span class="minus" id="focus-time-minus">-</span>
@@ -27,87 +28,70 @@
       <span class="plus" id="break-time-plus">+</span>
     </div>
     <div class="form-group">
-      <h3>Break time activities</h3>
-      <input type="radio" class="form-control" name="activities" id="fitness" value="fitness" />
-      <label for="fitness" class="control-label">Fitness</label><br />
-      <div style="display:none" id="fitness-activities">
-        <input type="url" class="activity-input" name="fitness-url" id="fitness-url"
-          placeholder="https://example.com" />
-        <button id="fitness-btn" type="button" class="btn btn-primary button">+</button>
-        <ul id='fitness-list'></ul>
-      </div>
-      <input type="radio" class="form-control" name="activities" id="meditation" value="meditation" />
-      <label for="meditation" class="control-label">Meditation</label><br />
-      <div style="display:none" id="meditation-activities">
-        <input type="url" class="activity-input" name="meditation-url" id="meditation-url"
-          placeholder="https://example.com" />
-        <button id="meditation-btn" type="button" class="btn btn-primary button">+</button>
-        <ul id='meditation-list'></ul>
-      </div>
-      <input type="radio" class="form-control" name="activities" id="stretching" value="stretching" />
-      <label for="stretching" class="control-label">Stretching</label>
-      <div style="display:none" id="stretching-activities">
-        <input type="url" class="activity-input" name="stretching-url" id="stretching-url"
-          placeholder="https://example.com" />
-        <button id="stretching-btn" type="button" class="btn btn-primary button">+</button>
-        <ul id='stretching-list'></ul>
+    <label for="goal">
+      <h3>Goal</h3>
+    </label>
+    <select name="goals" id="goals">
+      <option value="strength">Strength </option>
+      <option value="cardio">Cardio</option>
+      <option value="meditation" selected>Meditation</option>
+      <option value="flexibility">Flexibility</option>
+    </select>
+    </div>
+    <div class="form-group">
+    <label for="equipment">
+      <h3>Equipments</h3>
+    </label>
+    <select name="equipments" id="equipments">
+      <option value="dumbbells">Dumbbells</option>
+      <option value="kettlebells">Kettlebells</option>
+      <option value="resistance-bands">Resistance Bands</option>
+      <option value="pull-up-bar">Pull Up Bar</option>
+      <option value="parallettes">Parallettes</option>
+      <option value="gymnastic-rings">Gymnastic Rings</option>
+      <option value="yoga-mat">Yoga Mat</option>
+      <option value="foam-roll">Foam Roll</option>
+      <option value="body-only" selected>Body Only</option>
+    </select>
+  </div>
+  <div  class="form-group" id="gender-input">
+    <h3>Gender</h3>
+    <input type="radio" class="form-control" name="gender" id="gender-female" value="female" />
+    <label for="gender" class="control-label">Female</label><br />
+    <input type="radio" class="form-control" name="gender" id="gender-male" value="male" />
+    <label for="gender" class="control-label">Male</label><br />
+  </div>
+  <div  class="form-group" id="age-input">
+    <h3 id="age-display">Age:</h3>
+      <!-- user minimun age should be 10 -->
+      <input type="number" id="age-input" name="age" min="10" max="200">
+  </div>
+  <div  class="form-group" id="activity-impact-input">
+    <h3>Activity Impact</h3>
+    <h4>Pick low impact if you live in an apartment but do not wish to disturb your neighbours.</h4>
+    <input type="radio" class="form-control" name="activity-impact" id="activity-high-impact" value="high" />
+    <label for="activity-impact" class="control-label">high-impact</label><br />
+    <input type="radio" class="form-control" name="activity-impact" id="activity-low-impact" value="low" />
+    <label for="activity-impact" class="control-label">low-impact</label><br />
+  </div>
+    <div class="form-group">
+      <h3>Custom Breaktime Acitivity</h3> 
+      <label for="custom-breaktime-activity" class="control-label">Name</label><br />
+      <input type="text" class="form-control" name="activities" id="custom-breaktime-activity" />
+      <div id="custom-breaktime-activity">
+        <input type="url" class="activity-input" name="custom-breaktime-url" id="custom-breaktime-url"
+          placeholder="url link" />
+        <button id="custom-breaktime-btn" type="button" class="btn btn-primary button">+</button>
+        <ul id='custom-breaktime-list'></ul>
       </div>
     </div>
-
     <div class="form-group">
+      <button id="update-button" type="update" class="btn btn-primary grey button">Update</button>
       <button type="submit" class="btn btn-primary green button">Save</button>
       <button type="reset" class="btn btn-xs btn-warning button" id="reset-options">
         Reset to default
       </button>
-      <button id="test-button" class="btn btn-primary green button">Test</button>
     </div>
-  </form>
-  <form id="survey-form">
-    <div class="form-group">
-        <label for="goals">
-          <h3>Goals</h3>
-        </label>
-        <select name="goals" id="goals">
-          <option value="strength">Strength </option>
-          <option value="cardio">Cardio</option>
-          <option value="meditation">Meditation</option>
-          <option value="flexibility">Flexibility</option>
-        </select>
-        <label for="equipment">
-          <h3>Equipments</h3>
-        </label>
-        <select name="equipments" id="equipments">
-          <option value="dumbbells">Dumbbells</option>
-          <option value="kettlebells">Kettlebells</option>
-          <option value="resistance-bands">Resistance Bands</option>
-          <option value="pull-up-bar">Pull Up Bar</option>
-          <option value="parallettes">Parallettes</option>
-          <option value="gymnastic-rings">Gymnastic Rings</option>
-          <option value="yoga-mat">Yoga Mat</option>
-          <option value="foam-roll">Foam Roll</option>
-          <option value="body-only" selected>Body Only</option>
-        </select>
-      <div id="gender-input">
-        <h3>Gender</h3>
-        <input type="radio" class="form-control" name="gender" id="gender-female" value="female" />
-        <label for="gender" class="control-label">Female</label><br />
-        <input type="radio" class="form-control" name="gender" id="gender-male" value="male" />
-        <label for="gender" class="control-label">Male</label><br />
-      </div>
-      <div id="age-input">
-        <h3 id="age-display">Age:</h3>
-          <!-- user minimun age should be 10 -->
-          <input type="number" id="age-input" name="age" min="10" max="200">
-      </div>
-      <div id="activity-impact-input">
-        <h3>Activity Impact</h3>
-        <h4>Pick low impact if you live in an apartment but do not wish to disturb your neighbours.</h4>
-        <input type="radio" class="form-control" name="activity-impact" id="activity-high-impact" value="high" />
-        <label for="activity-impact" class="control-label">high-impact</label><br />
-        <input type="radio" class="form-control" name="activity-impact" id="activity-low-impact" value="low" />
-        <label for="activity-impact" class="control-label">low-impact</label><br />
-      </div>
-      <button id="update-button" type="update" class="btn btn-primary grey button">Update</button>
   </form>
 </body>
 </html>
