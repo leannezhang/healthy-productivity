@@ -55,7 +55,7 @@ let exercise_data = [
         "flexibility"
       ],
       "activityImpact": "low",
-      "breakTime": [10,15],
+      "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
     },
     {
@@ -65,7 +65,7 @@ let exercise_data = [
         "meditation"
       ],
       "activityImpact": "low",
-      "breakTime": [10,15],
+      "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
     },
     {
@@ -127,12 +127,12 @@ let exercise_data = [
         "cardio"
       ],
       "activityImpact": "high",
-      "breakTime": [10,15],
+      "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
     }
 ]
 
-// TODO: modify userprofile to match cases
+// TODO: modify frontend userprofile to match these key mapping
 let mockUserProfile = {
     activityImpact: "low",
     age: "33",
