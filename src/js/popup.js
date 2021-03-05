@@ -178,15 +178,16 @@ function clearAlarm() {
 timerId = setInterval(countDown, 1000);
 //An Alarm delay of less than the minimum 1 minute will fire
 // in approximately 1 minute incriments if released
+document
+  .getElementById("startFocusTimerButton")
+  .addEventListener("click", setAlarm);
+document
+  .getElementById("stopFocusTimerButton")
+  .addEventListener("click", clearAlarm);
 
-function addEventListenerIfButtonExists(buttonId, event) {
-  var button = document
-    .getElementById(buttonId)
-  if (button){
-    button.addEventListener("click", event)
-  }
-}
-addEventListenerIfButtonExists("startFocusTimerButton", setAlarm)
-addEventListenerIfButtonExists("stopFocusTimerButton", clearAlarm)
-addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
-addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
+document
+  .getElementById("startBreakTimerButton")
+  .addEventListener("click", setAlarm);
+document
+  .getElementById("stopBreakTimerButton")
+  .addEventListener("click", clearAlarm);
