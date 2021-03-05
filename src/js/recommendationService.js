@@ -149,7 +149,6 @@ function runRecommendedService(exerciseData, userData) {
         exercise.goals.includes(goals) &&
         breakTime > exercise.breakTime[0] && breakTime <= exercise.breakTime[1])
     })
-
     const randomIndex = Math.floor(Math.random() * filterData.length);
     return filterData[randomIndex];
 }

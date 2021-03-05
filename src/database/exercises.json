@@ -1,125 +1,125 @@
 [
-    {
-      "id": 0,
-      "exercise_name": "Power Yoga",
-      "goals": [
-        "strength",
-        "flexibility"
-      ],
-      "activity-impact": "low",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=704f9VYk_yc&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=23"
-    },
-    {
-      "id": 1,
-      "exercise_name": "Japa Meditation",
-      "goals": [
-        "meditation"
-      ],
-      "activity-impact": "low",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=ISA2nTJXY6M&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ"
-    },
-    {
-      "id": 2,
-      "exercise_name": "Guided Meidtation",
-      "goals": [
-        "meditation"
-      ],
-      "activity-impact": "low",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=oopQVhtdeLo&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=3"
-    },
-    {
-      "id": 3,
-      "exercise_name": "Hatha Yoga",
-      "goals": [
-        "flexibility"
-      ],
-      "activity-impact": "low",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=GvLLukzIW7c&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=12"
-    },
-    {
-      "id": 4,
-      "exercise_name": "Gentle Yoga",
-      "goals": [
-        "flexibility"
-      ],
-      "activity-impact": "low",
-      "time": 15,
-      "youtube": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
-    },
-    {
-      "id": 5,
-      "exercise_name": "Guided Meditation",
-      "goals": [
-        "meditation"
-      ],
-      "activity-impact": "low",
-      "time": 15,
-      "youtube": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
-    },
-    {
-      "id": 6,
-      "exercise_name": "Office Yoga",
-      "goals": [
-        "flexibility"
-      ],
-      "activity-impact": "low",
-      "time": 5,
-      "youtube": "https://www.youtube.com/watch?v=Q-bVQXcfstY&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=47"
-    },
-    {
-      "id": 7,
-      "exercise_name": "Stretching Routine for the wrists",
-      "goals": [
-        "flexibility"
-      ],
-      "activity-impact": "low",
-      "time": 5,
-      "youtube": "https://www.youtube.com/watch?v=FYh_XG2Z6iU&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=44"
-    },
-    {
-      "id": 8,
-      "exercise_name": "HIIT Workout",
-      "goals": [
-        "strength",
-        "cardio"
-      ],
-      "activity-impact": "high",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=zr08J6wB53Y"
-    },
-    {
-      "id": 9,
-      "exercise_name": "Ab Workout",
-      "goals": [
-        "strength",
-        "cardio"
-      ],
-      "activity-impact": "low",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
-    },
-    {
-      "id": 10,
-      "exercise_name": "Upper Body Workout",
-      "goals": [
-        "strength"
-      ],
-      "activity-impact": "low",
-      "time": 10,
-      "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
-    },
-    {
-      "id": 11,
-      "exercise_name": "Happy Cardio",
-      "goals": [
-        "cardio"
-      ],
-      "activity-impact": "high",
-      "time": 15,
-      "youtube": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
-    }
+  {
+    "id": 0,
+    "exerciseName": "Power Yoga",
+    "goals": [
+      "strength",
+      "flexibility"
+    ],
+    "activityImpact": "low",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=704f9VYk_yc&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=23"
+  },
+  {
+    "id": 1,
+    "exerciseName": "Japa Meditation",
+    "goals": [
+      "meditation"
+    ],
+    "activityImpact": "low",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=ISA2nTJXY6M&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ"
+  },
+  {
+    "id": 2,
+    "exerciseName": "Guided Meidtation",
+    "goals": [
+      "meditation"
+    ],
+    "activityImpact": "low",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=oopQVhtdeLo&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=3"
+  },
+  {
+    "id": 3,
+    "exerciseName": "Hatha Yoga",
+    "goals": [
+      "flexibility"
+    ],
+    "activityImpact": "low",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=GvLLukzIW7c&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=12"
+  },
+  {
+    "id": 4,
+    "exerciseName": "Gentle Yoga",
+    "goals": [
+      "flexibility"
+    ],
+    "activityImpact": "low",
+    "breakTime": [10,15],
+    "youtube": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
+  },
+  {
+    "id": 5,
+    "exerciseName": "Guided Meditation",
+    "goals": [
+      "meditation"
+    ],
+    "activityImpact": "low",
+    "breakTime": [10,15],
+    "youtube": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
+  },
+  {
+    "id": 6,
+    "exerciseName": "Office Yoga",
+    "goals": [
+      "flexibility"
+    ],
+    "activityImpact": "low",
+    "breakTime": [0,5],
+    "youtube": "https://www.youtube.com/watch?v=Q-bVQXcfstY&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=47"
+  },
+  {
+    "id": 7,
+    "exerciseName": "Stretching Routine for the wrists",
+    "goals": [
+      "flexibility"
+    ],
+    "activityImpact": "low",
+    "breakTime": [0,5],
+    "youtube": "https://www.youtube.com/watch?v=FYh_XG2Z6iU&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=44"
+  },
+  {
+    "id": 8,
+    "exerciseName": "HIIT Workout",
+    "goals": [
+      "strength",
+      "cardio"
+    ],
+    "activityImpact": "high",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=zr08J6wB53Y"
+  },
+  {
+    "id": 9,
+    "exerciseName": "Ab Workout",
+    "goals": [
+      "strength",
+      "cardio"
+    ],
+    "activityImpact": "low",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
+  },
+  {
+    "id": 10,
+    "exerciseName": "Upper Body Workout",
+    "goals": [
+      "strength"
+    ],
+    "activityImpact": "low",
+    "breakTime": [5,10],
+    "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
+  },
+  {
+    "id": 11,
+    "exerciseName": "Happy Cardio",
+    "goals": [
+      "cardio"
+    ],
+    "activityImpact": "high",
+    "breakTime": [10,15],
+    "youtube": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
+  }
 ]
