@@ -15,7 +15,7 @@ let exercise_data = [
         "flexibility"
       ],
       "activityImpact": "low",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=704f9VYk_yc&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=23"
     },
     {
@@ -25,7 +25,7 @@ let exercise_data = [
         "meditation"
       ],
       "activityImpact": "low",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=ISA2nTJXY6M&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ"
     },
     {
@@ -35,7 +35,7 @@ let exercise_data = [
         "meditation"
       ],
       "activityImpact": "low",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=oopQVhtdeLo&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=3"
     },
     {
@@ -45,7 +45,7 @@ let exercise_data = [
         "flexibility"
       ],
       "activityImpact": "low",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=GvLLukzIW7c&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=12"
     },
     {
@@ -55,7 +55,7 @@ let exercise_data = [
         "flexibility"
       ],
       "activityImpact": "low",
-      "breakTime": 15,
+      "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
     },
     {
@@ -65,7 +65,7 @@ let exercise_data = [
         "meditation"
       ],
       "activityImpact": "low",
-      "breakTime": 15,
+      "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
     },
     {
@@ -75,7 +75,7 @@ let exercise_data = [
         "flexibility"
       ],
       "activityImpact": "low",
-      "breakTime": 5,
+      "breakTime": [0,5],
       "youtube": "https://www.youtube.com/watch?v=Q-bVQXcfstY&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=47"
     },
     {
@@ -85,7 +85,7 @@ let exercise_data = [
         "flexibility"
       ],
       "activityImpact": "low",
-      "breakTime": 5,
+      "breakTime": [0,5],
       "youtube": "https://www.youtube.com/watch?v=FYh_XG2Z6iU&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=44"
     },
     {
@@ -96,7 +96,7 @@ let exercise_data = [
         "cardio"
       ],
       "activityImpact": "high",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=zr08J6wB53Y"
     },
     {
@@ -107,7 +107,7 @@ let exercise_data = [
         "cardio"
       ],
       "activityImpact": "low",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
     },
     {
@@ -117,7 +117,7 @@ let exercise_data = [
         "strength"
       ],
       "activityImpact": "low",
-      "breakTime": 10,
+      "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
     },
     {
@@ -127,23 +127,30 @@ let exercise_data = [
         "cardio"
       ],
       "activityImpact": "high",
-      "breakTime": 15,
+      "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
     }
 ]
 
-// TODO: modify userprofile to match cases
+// TODO: modify frontend userprofile to match these key mapping
 let mockUserProfile = {
-    activityImpact: "high",
+    activityImpact: "low",
     age: "33",
     equipments: [],
     gender: "female",
-    goals: ["strength"],
-    breakTime: "1"
+    goals: "flexibility",
+    breakTime: "5"
 }
 
-function load() {
-    console.log(exercise_data)
+function runRecommendedService(exerciseData, userData) {
+    const filterData = exerciseData.filter((exercise) => {
+       const { activityImpact, goals, breakTime } = userData;
+       return (exercise.activityImpact === activityImpact && 
+        exercise.goals.includes(goals) &&
+        breakTime > exercise.breakTime[0] && breakTime <= exercise.breakTime[1])
+    })
+    const randomIndex = Math.floor(Math.random() * filterData.length);
+    return filterData[randomIndex];
 }
-console.log("hello this is the recommendation service");
-load();
+
+console.log("I'm recommending this exercise to you", runRecommendedService(exercise_data, mockUserProfile));
