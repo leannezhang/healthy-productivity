@@ -116,47 +116,30 @@ function readFromLocalStorage() {
       break;
     }
   }
-
   goalsValue = userProfile.goal
+}
+
+// collect all input and store them
+function collectFields() {
+  let gender = document.querySelector('input[name=gender]:checked').value
+  let age = document.querySelector("input[name=age]").value;
+  let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
+  let goalsValue = document.querySelector("select[id=goal]").value
+  // load everything
+  // TODO (liyangz) fix equipment. pass in an array
+  userProfile = new UserProfile(gender, age, activityImpact, goalsValue, [])
+  userProfile.write()
 }
 
 function setEventListeners() {
   document.getElementById("options-form").addEventListener("submit", e => {
     e.preventDefault();
+    collectFields()
     saveOptions();
   });
 
   document.getElementById("reset-options").addEventListener("click", () => {
     resetDefaults();
-  });
-
-  document.getElementById("update-button").addEventListener("click", (e) => {
-    // collect all input and store them
-    e.preventDefault();
-    let gender = document.querySelector('input[name=gender]:checked').value
-    let age = document.querySelector("input[name=age]").value;
-    let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
-    let goalsValue = document.querySelector("select[id=goals]").value
-    // load everything
-    // TODO (liyangz) fix equipment. pass in an array
-    userProfile = new UserProfile(gender, age, activityImpact, goalsValue, [])
-    userProfile.write()
-  });
-
-  document.getElementById("meditation").addEventListener("click", e => {
-    document.getElementById("fitness-activities").style.display = "none";
-    document.getElementById("meditation-activities").style.display = "block";
-    document.getElementById("stretching-activities").style.display = "none";
-    document.getElementById("stretching-list").innerHTML = "";
-    document.getElementById("fitness-list").innerHTML = "";
-  });
-
-  document.getElementById("stretching").addEventListener("click", e => {
-    document.getElementById("fitness-activities").style.display = "none";
-    document.getElementById("meditation-activities").style.display = "none";
-    document.getElementById("stretching-activities").style.display = "block";
-    document.getElementById("fitness-list").innerHTML = "";
-    document.getElementById("meditation-list").innerHTML = "";
   });
 
   document.getElementById("focus-time-minus").addEventListener("click", e => {
@@ -187,27 +170,6 @@ function setEventListeners() {
     count = count > 30 ? 30 : count;
     input.value = count;
     return false;
-  });
-
-  document.getElementById("stretching-btn").addEventListener("click", e => {
-    var text = document.getElementById("stretching-url").value;
-    if (/\S/.test(text)) {
-      addListElement("stretching-list", text);
-    }
-  });
-
-  document.getElementById("meditation-btn").addEventListener("click", e => {
-    var text = document.getElementById("meditation-url").value;
-    if (/\S/.test(text)) {
-      addListElement("meditation-list", text);
-    }
-  });
-
-  document.getElementById("fitness-btn").addEventListener("click", e => {
-    var text = document.getElementById("fitness-url").value;
-    if (/\S/.test(text)) {
-      addListElement("fitness-list", text);
-    }
   });
 }
 

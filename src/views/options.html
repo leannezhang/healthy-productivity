@@ -31,7 +31,7 @@
     <label for="goal">
       <h3>Goal</h3>
     </label>
-    <select name="goals" id="goals">
+    <select name="goal" id="goal">
       <option value="strength">Strength </option>
       <option value="cardio">Cardio</option>
       <option value="meditation" selected>Meditation</option>
@@ -39,41 +39,41 @@
     </select>
     </div>
     <div class="form-group">
-    <label for="equipment">
-      <h3>Equipments</h3>
-    </label>
-    <select name="equipments" id="equipments">
-      <option value="dumbbells">Dumbbells</option>
-      <option value="kettlebells">Kettlebells</option>
-      <option value="resistance-bands">Resistance Bands</option>
-      <option value="pull-up-bar">Pull Up Bar</option>
-      <option value="parallettes">Parallettes</option>
-      <option value="gymnastic-rings">Gymnastic Rings</option>
-      <option value="yoga-mat">Yoga Mat</option>
-      <option value="foam-roll">Foam Roll</option>
-      <option value="body-only" selected>Body Only</option>
-    </select>
-  </div>
-  <div  class="form-group" id="gender-input">
-    <h3>Gender</h3>
-    <input type="radio" class="form-control" name="gender" id="gender-female" value="female" />
-    <label for="gender" class="control-label">Female</label><br />
-    <input type="radio" class="form-control" name="gender" id="gender-male" value="male" />
-    <label for="gender" class="control-label">Male</label><br />
-  </div>
-  <div  class="form-group" id="age-input">
-    <h3 id="age-display">Age:</h3>
-      <!-- user minimun age should be 10 -->
-      <input type="number" id="age-input" name="age" min="10" max="200">
-  </div>
-  <div  class="form-group" id="activity-impact-input">
-    <h3>Activity Impact</h3>
-    <h4>Pick low impact if you live in an apartment but do not wish to disturb your neighbours.</h4>
-    <input type="radio" class="form-control" name="activity-impact" id="activity-high-impact" value="high" />
-    <label for="activity-impact" class="control-label">high-impact</label><br />
-    <input type="radio" class="form-control" name="activity-impact" id="activity-low-impact" value="low" />
-    <label for="activity-impact" class="control-label">low-impact</label><br />
-  </div>
+      <label for="equipment">
+        <h3>Equipments</h3>
+      </label>
+      <select name="equipments" id="equipments">
+        <option value="dumbbells">Dumbbells</option>
+        <option value="kettlebells">Kettlebells</option>
+        <option value="resistance-bands">Resistance Bands</option>
+        <option value="pull-up-bar">Pull Up Bar</option>
+        <option value="parallettes">Parallettes</option>
+        <option value="gymnastic-rings">Gymnastic Rings</option>
+        <option value="yoga-mat">Yoga Mat</option>
+        <option value="foam-roll">Foam Roll</option>
+        <option value="body-only" selected>Body Only</option>
+      </select>
+    </div>
+    <div  class="form-group" id="gender-input">
+      <h3>Gender</h3>
+      <input type="radio" class="form-control" name="gender" id="gender-female" checked value="female" />
+      <label for="gender" class="control-label">Female</label><br />
+      <input type="radio" class="form-control" name="gender" id="gender-male" value="male" />
+      <label for="gender" class="control-label">Male</label><br />
+    </div>
+    <div  class="form-group" id="age-input">
+      <h3 id="age-display">Age:</h3>
+        <input type="number" id="age-input" name="age" min="10" max="150" value="18">
+    </div>
+    <div  class="form-group" id="activity-impact-input">
+      <h3>Activity Impact</h3>
+      <h4>Pick low impact if you live in an apartment but do not wish to disturb your neighbours.</h4>
+      <input type="radio" class="form-control" name="activity-impact" id="activity-high-impact" value="high" />
+      <label for="activity-impact" class="control-label">high-impact</label><br />
+      <input type="radio" class="form-control" name="activity-impact" id="activity-low-impact" value="low" checked />
+      <label for="activity-impact" class="control-label">low-impact</label><br />
+    </div>
+    <!-- Will implement this in the future -->
     <div class="form-group">
       <h3>Custom Breaktime Acitivity</h3> 
       <label for="custom-breaktime-activity" class="control-label">Name</label><br />
@@ -83,11 +83,10 @@
           placeholder="url link" />
         <button id="custom-breaktime-btn" type="button" class="btn btn-primary button">+</button>
         <ul id='custom-breaktime-list'></ul>
-      </div>
+      </div> 
     </div>
     <div class="form-group">
-      <button id="update-button" type="update" class="btn btn-primary grey button">Update</button>
-      <button type="submit" class="btn btn-primary green button">Save</button>
+      <button type="submit" class="btn btn-primary green button" id="save">Save</button>
       <button type="reset" class="btn btn-xs btn-warning button" id="reset-options">
         Reset to default
       </button>
