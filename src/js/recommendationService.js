@@ -1,5 +1,5 @@
 // input from the user 
-// goals: [meditation* | strength | flexbility | cardio ]
+// goal: [meditation* | strength | flexbility | cardio ]
 // activityImpact: [ low* | high ]
 // breakTime: [1 - infinity minutes]
 
@@ -10,10 +10,7 @@ let exercise_data = [
     {
       "id": 0,
       "exerciseName": "Power Yoga",
-      "goals": [
-        "strength",
-        "flexibility"
-      ],
+      "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=704f9VYk_yc&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=23"
@@ -21,9 +18,7 @@ let exercise_data = [
     {
       "id": 1,
       "exerciseName": "Japa Meditation",
-      "goals": [
-        "meditation"
-      ],
+      "goal": "meditation",
       "activityImpact": "low",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=ISA2nTJXY6M&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ"
@@ -31,9 +26,7 @@ let exercise_data = [
     {
       "id": 2,
       "exerciseName": "Guided Meidtation",
-      "goals": [
-        "meditation"
-      ],
+      "goal": "meditation",
       "activityImpact": "low",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=oopQVhtdeLo&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=3"
@@ -41,9 +34,7 @@ let exercise_data = [
     {
       "id": 3,
       "exerciseName": "Hatha Yoga",
-      "goals": [
-        "flexibility"
-      ],
+      "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=GvLLukzIW7c&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=12"
@@ -51,9 +42,7 @@ let exercise_data = [
     {
       "id": 4,
       "exerciseName": "Gentle Yoga",
-      "goals": [
-        "flexibility"
-      ],
+      "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
@@ -61,9 +50,7 @@ let exercise_data = [
     {
       "id": 5,
       "exerciseName": "Guided Meditation",
-      "goals": [
-        "meditation"
-      ],
+      "goal": "meditation",
       "activityImpact": "low",
       "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
@@ -71,9 +58,7 @@ let exercise_data = [
     {
       "id": 6,
       "exerciseName": "Office Yoga",
-      "goals": [
-        "flexibility"
-      ],
+      "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [0,5],
       "youtube": "https://www.youtube.com/watch?v=Q-bVQXcfstY&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=47"
@@ -81,9 +66,7 @@ let exercise_data = [
     {
       "id": 7,
       "exerciseName": "Stretching Routine for the wrists",
-      "goals": [
-        "flexibility"
-      ],
+      "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [0,5],
       "youtube": "https://www.youtube.com/watch?v=FYh_XG2Z6iU&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=44"
@@ -91,10 +74,7 @@ let exercise_data = [
     {
       "id": 8,
       "exerciseName": "HIIT Workout",
-      "goals": [
-        "strength",
-        "cardio"
-      ],
+      "goal": "cardio",
       "activityImpact": "high",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=zr08J6wB53Y"
@@ -102,10 +82,7 @@ let exercise_data = [
     {
       "id": 9,
       "exerciseName": "Ab Workout",
-      "goals": [
-        "strength",
-        "cardio"
-      ],
+      "goal": "cardio",
       "activityImpact": "low",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
@@ -113,9 +90,7 @@ let exercise_data = [
     {
       "id": 10,
       "exerciseName": "Upper Body Workout",
-      "goals": [
-        "strength"
-      ],
+      "goal": "strength",
       "activityImpact": "low",
       "breakTime": [5,10],
       "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
@@ -123,9 +98,7 @@ let exercise_data = [
     {
       "id": 11,
       "exerciseName": "Happy Cardio",
-      "goals": [
-        "cardio"
-      ],
+      "goal": "cardio",
       "activityImpact": "high",
       "breakTime": [10,30],
       "youtube": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
@@ -138,15 +111,15 @@ let mockUserProfile = {
     age: "33",
     equipments: [],
     gender: "female",
-    goals: "flexibility",
+    goal: "flexibility",
     breakTime: "5"
 }
 
 function runRecommendedService(exerciseData, userData) {
     const filterData = exerciseData.filter((exercise) => {
-       const { activityImpact, goals, breakTime } = userData;
+       const { activityImpact, goal, breakTime } = userData;
        return (exercise.activityImpact === activityImpact && 
-        exercise.goals.includes(goals) &&
+        exercise.goal === goal &&
         breakTime > exercise.breakTime[0] && breakTime <= exercise.breakTime[1])
     })
     const randomIndex = Math.floor(Math.random() * filterData.length);
