@@ -102,9 +102,9 @@ function countDown() {
 }
 
 function countDownFocusTimer() {
-chrome.storage.sync.get(["startTime"], function(result) {
-  startTime = result.startTime;
-  // 60,000 is to convert mins to millsecs
+  chrome.storage.sync.get(["startTime"], function(result) {
+    startTime = result.startTime;
+    // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
     focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
     $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
