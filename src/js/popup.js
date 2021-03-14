@@ -102,9 +102,9 @@ function countDown() {
 }
 
 function countDownFocusTimer() {
-  chrome.storage.sync.get(["startTime"], function(result) {
-    startTime = result.startTime;
-    // 60,000 is to convert mins to millsecs
+chrome.storage.sync.get(["startTime"], function(result) {
+  startTime = result.startTime;
+  // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
     focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
     $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
@@ -178,16 +178,15 @@ function clearAlarm() {
 timerId = setInterval(countDown, 1000);
 //An Alarm delay of less than the minimum 1 minute will fire
 // in approximately 1 minute incriments if released
-document
-  .getElementById("startFocusTimerButton")
-  .addEventListener("click", setAlarm);
-document
-  .getElementById("stopFocusTimerButton")
-  .addEventListener("click", clearAlarm);
 
-document
-  .getElementById("startBreakTimerButton")
-  .addEventListener("click", setAlarm);
-document
-  .getElementById("stopBreakTimerButton")
-  .addEventListener("click", clearAlarm);
+function addEventListenerIfButtonExists(buttonId, event) {
+  var button = document
+    .getElementById(buttonId)
+  if (button){
+    button.addEventListener("click", event)
+  }
+}
+addEventListenerIfButtonExists("startFocusTimerButton", setAlarm)
+addEventListenerIfButtonExists("stopFocusTimerButton", clearAlarm)
+addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
+addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
