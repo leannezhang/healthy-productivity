@@ -1,97 +1,60 @@
-class UserProfile {
-  constructor(
-    gender = "",
-    age = "",
-    activityImpact = "",
-    goal = "",
-    equipment = "") {
-    this.gender = gender;
-    this.age = age;
-    this.activityImpact = activityImpact;
-    this.goal = goal;
-    this.equipment = equipment;
-  }
-
-  read() {
-    console.log("Reading UserProfile")
-    let userProfileStr = localStorage.getItem("userProfile");
-    let userProfile;
-    if (userProfileStr) {
-      userProfile = JSON.parse(userProfileStr);
-      this.gender = userProfile.gender;
-      this.age = userProfile.age;
-      this.activityImpact = userProfile.activityImpact;
-      this.goal = userProfile.goal;
-      this.equipment = userProfile.equipment;
-    }
-  }
-
-  recommendExercise() {
-    // data massage and do recommendations
-  }
-
-  write() {
-    console.log("Writing UserProfile")
-    let userProfileJson = {
-      gender: "",
-      age: "",
-      activityImpact: "",
-      goal: "",
-      equipment: "",
-    }
-    userProfileJson.gender = this.gender;
-    userProfileJson.age = this.age;
-    userProfileJson.activityImpact = this.activityImpact;
-    userProfileJson.goal = this.goal;
-    userProfileJson.equipment = this.equipment;
-    console.log("userProfileJson: ", JSON.stringify(userProfileJson));
-    return localStorage.setItem("userProfile", JSON.stringify(userProfileJson));
-  }
+function recommendExercise() {
+  // data massage and do recommendations
+  console.log('TODO')
 }
 
-let userProfile = new UserProfile();
-function prepopulateDataFromStorage() {
-  /*
-    Load UserProfile from localStorage
-    pre-populate html fields
-  */
-  userProfile.read();
+function setUserProfileToChromeStorage(userProfileInputs) {
+  console.log('setUserProfileToChromeStorage');
+  chrome.storage.sync.set({ "userProfile": userProfileInputs }, function () {
+    console.log(JSON.stringify(userProfileInputs));
+  });
+}
 
-  // Get input elements
-  let femaleGender = document.querySelector("input[id=gender-female]")
-  let maleGender = document.querySelector("input[id=gender-male]")
-  let age = document.querySelector("input[id=age-input]")
+function prepopulatingUIDataFromStorage() {
+  /*
+    Load UserProfile from chrome storage
+    Pre-populate html fields
+  */
+  let femaleGenderInput = document.querySelector("input[id=gender-female]")
+  let maleGenderInput = document.querySelector("input[id=gender-male]")
+  let ageInput = document.querySelector("input[id=age-input]")
   let highImpactActivity = document.querySelector("input[id=activity-high-impact]")
   let lowImpactActivity = document.querySelector("input[id=activity-low-impact]")
-  let goalValue = document.querySelector("select[id=goal]")
-  let equipmentValue = document.querySelector("select[id=equipment]")
+  let goalInput = document.querySelector("select[id=goal]")
 
-  // Assign input element
-  switch (userProfile.gender) {
-    case 'female': {
-      femaleGender.checked = true;
+  chrome.storage.sync.get(["userProfile"], function(result) {
+    if (result) {
+        const { gender, age, activityImpact, goal } = result.userProfile;
+        switch (gender) {
+          case 'female': {
+            femaleGenderInput.checked = true;
+            break;
+          }
+          case 'male': {
+            maleGenderInput.checked = true;
+            break;
+          }
+        }
+      
+        if (age) {
+          ageInput.value = age;
+        }
+      
+        switch (activityImpact) {
+          case 'high-impact': {
+            highImpactActivity.checked = true;
+            break;
+          }
+          case 'low-impact': {
+            lowImpactActivity.checked = true;
+            break;
+          }
+        }
+        // TOFIX
+        goalInput = goal;
     }
-    case 'male': {
-      maleGender.checked = true;
-    }
-  }
-
-  if (userProfile.age) {
-    age.value = userProfile.age;
-  }
-
-  switch (userProfile.activityImpact) {
-    case 'high-impact': {
-      highImpactActivity.checked = true;
-      break;
-    }
-    case 'low-impact': {
-      lowImpactActivity.checked = true;
-      break;
-    }
-  }
-  goalValue = userProfile.goal;
-  equipmentValue = userProfile.equipment;
+  });
+  
 }
 
 // collect all input and store them
@@ -99,11 +62,14 @@ function saveUserProfile() {
   let gender = document.querySelector('input[name=gender]:checked').value
   let age = document.querySelector("input[name=age]").value;
   let activityImpact = document.querySelector('input[name=activity-impact]:checked').value;
-  let goalValue = document.querySelector("select[id=goal]").value
-  // load everything
-  // TODO (liyangz) fix equipment. pass in an array
-  userProfile = new UserProfile(gender, age, activityImpact, goalValue, [])
-  userProfile.write()
+  let goal = document.querySelector("select[id=goal]").value
+  const userProfileInputs = {
+    gender,
+    age,
+    activityImpact,
+    goal
+  }
+  setUserProfileToChromeStorage(userProfileInputs);
 }
 
 function setEventListeners() {
@@ -169,7 +135,7 @@ function saveTimeOptions() {
   });
 }
 
-prepopulateDataFromStorage();
+prepopulatingUIDataFromStorage();
 setEventListeners();
 
 
