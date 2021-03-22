@@ -24,7 +24,7 @@ function prepopulatingUIDataFromStorage() {
 
   chrome.storage.sync.get(["userProfile"], function(result) {
     if (result) {
-      
+
         const { gender, age, activityImpact, goal } = result.userProfile;
         switch (gender) {
           case 'female': {
@@ -119,11 +119,9 @@ function setEventListeners() {
   });
 }
 
-// TODO: reset defaults
 function resetDefaults() {
   document.getElementById("focus-time").value = 30;
   document.getElementById("break-time").value = 5;
-  document.getElementById("fitness").checked = false;
 }
 
 function saveTimeOptions() {
