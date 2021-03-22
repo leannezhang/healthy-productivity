@@ -24,6 +24,7 @@ function prepopulatingUIDataFromStorage() {
 
   chrome.storage.sync.get(["userProfile"], function(result) {
     if (result) {
+      
         const { gender, age, activityImpact, goal } = result.userProfile;
         switch (gender) {
           case 'female': {
@@ -50,8 +51,10 @@ function prepopulatingUIDataFromStorage() {
             break;
           }
         }
-        // TOFIX
-        goalInput = goal;
+
+        if (goal) {
+          goalInput.value = goal;
+        }
     }
   });
   
