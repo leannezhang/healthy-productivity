@@ -12,9 +12,15 @@ chrome.runtime.onInstalled.addListener(function() {
   });
 });
 
+let exerciseURL = '';
+
+// Listening incoming messages from content scripts like options.js and popup.js
 chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   if (message.type === "notification") {
     chrome.notifications.create(message.options);
+  } else if (message.exceriseURL) {
+    exerciseURL= message.exceriseURL;
+    console.log("exceriseURL is",exerciseURL)
   }
 });
 
@@ -31,11 +37,13 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
     chrome.notifications.create({
       title: "Time for a break",
       message:
-        "It's time for a relaxing break. Pick your selected interest in the timer",
+        "It's time for a relaxing break.",
       iconUrl: "src/images/get_started128.png",
       type: "basic"
     });
-    // When the break alarm times up
+    // Open the recommneded exercise in the new window
+    window.open(exerciseURL)
+  // When the break alarm times up
   } else {
     chrome.storage.sync.set(
       { view: "focusView", timerStarted: false, startTime: 0 },
