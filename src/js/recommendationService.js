@@ -120,6 +120,7 @@ let mockUserProfile = {
     age: "33",
     gender: "female",
     goal: "flexibility",
+    breakTime: 5,
 }
 
 function runRecommendedService(exerciseData, userData) {
