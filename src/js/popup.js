@@ -30,6 +30,16 @@ chrome.storage.sync.get(["startTime"], function(result) {
   startTime = result.startTime;
 });
 
+chrome.storage.sync.get(["activityCategory"], function(result) {
+  activityCategory = result.activityCategory;
+  console.log("Selected activity is " + activityCategory);
+});
+
+chrome.storage.sync.get(["activityLst"], function(result) {
+  activityLst = result.activityLst;
+  console.log("Provided activity list is " + activityLst);
+});
+
 chrome.storage.sync.get(["view"], function(result) {
   view = result.view;
   if (view === "focusView") {
@@ -42,6 +52,16 @@ chrome.storage.sync.get(["view"], function(result) {
     showView.classList.remove("hide");
     hideView = document.getElementById("focusTimeDiv");
     hideView.classList.add("hide");
+
+    chrome.storage.sync.get(["activityLst"], function(result) {
+      activityLst = result.activityLst;
+      console.log("Provided activity list is " + activityLst);
+    });
+
+    chrome.storage.sync.get(["activityCategory"], function(result) {
+      activityCategory = result.activityCategory;
+      console.log("Selected activity is " + activityCategory);
+    });
 
     var a = document.createElement("a");
     a.setAttribute('href', activityLst);
@@ -141,17 +161,6 @@ function setAlarm(event) {
   chrome.browserAction.setBadgeText({ text: badgeText });
   // window.close();
 }
-function openRecommendedExerciseVideo() {
-  chrome.storage.sync.get(["userProfile", "breakTime"], function(result) {
-    if (result.userProfile && result.breakTime) {
-      const data = { ...result.userProfile, breakTime: result.breakTime } 
-      let exercise = runRecommendedService(exercise_data, data)
-      window.open(exercise.url)
-    } else {
-      console.error("Failed to load required data to recommend exercise")
-    }
-  });
-}
 
 function clearAlarm() {
   chrome.alarms.clearAll();
@@ -177,10 +186,7 @@ function addEventListenerIfButtonExists(buttonId, event) {
     button.addEventListener("click", event)
   }
 }
-// TODO figure out why openRec function is not trigger when clicking 
-//addEventListenerIfButtonExists("startFocusTimerButton", setAlarm)
-addEventListenerIfButtonExists("startFocusTimerButton", openRecommendedExerciseVideo)
+addEventListenerIfButtonExists("startFocusTimerButton", setAlarm)
 addEventListenerIfButtonExists("stopFocusTimerButton", clearAlarm)
-//addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
-addEventListenerIfButtonExists("startBreakTimerButton", openRecommendedExerciseVideo)
+addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
 addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
