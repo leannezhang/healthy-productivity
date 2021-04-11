@@ -3,11 +3,22 @@ function recommendExercise() {
   console.log('TODO')
 }
 
+// Not used
 function setUserProfileToChromeStorage(userProfileInputs) {
   console.log('setUserProfileToChromeStorage');
   chrome.storage.sync.set({ "userProfile": userProfileInputs }, function () {
     console.log(JSON.stringify(userProfileInputs));
   });
+}
+
+function sendUserProfileToBackground(userInputs) {
+  console.log('sending user profile to background', userInputs);
+  let exercise = runRecommendedService(exercise_data, {userInputs})
+  chrome.runtime.sendMessage({
+    userProfile: userInputs
+  }, function(response) {
+    console.log("user profile sent, this is the response", response)
+  })
 }
 
 function prepopulatingUIDataFromStorage() {
@@ -72,7 +83,9 @@ function saveUserProfile() {
     activityImpact,
     goal
   }
-  setUserProfileToChromeStorage(userProfileInputs);
+  let breakTime = document.getElementById("break-time").value;
+
+  sendUserProfileToBackground({ ...userProfileInputs, breakTime: breakTime});
 }
 
 function setEventListeners() {

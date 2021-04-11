@@ -15,6 +15,8 @@ chrome.runtime.onInstalled.addListener(function() {
 chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   if (message.type === "notification") {
     chrome.notifications.create(message.options);
+  } else if (message.userProfile) {
+    console.log("user profile is", JSON.stringify(message.userProfile))
   }
 });
 
