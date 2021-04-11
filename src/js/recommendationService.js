@@ -6,14 +6,15 @@
 // look into exercises.json
 // result: randomly selected an exercise object {} based on the recommendation service
 
+// index 0 is default exercise
 let exercise_data = [
     {
       "id": 0,
-      "exerciseName": "Power Yoga",
-      "goal": "flexibility",
+      "exerciseName": "Take a deep breath",
+      "goal": "meditation",
       "activityImpact": "low",
-      "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=704f9VYk_yc&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=23"
+      "breakTime": [0,30],
+      "url": "https://www.youtube.com/watch?v=aNXKjGFUlMs"
     },
     {
       "id": 1,
@@ -21,7 +22,7 @@ let exercise_data = [
       "goal": "meditation",
       "activityImpact": "low",
       "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=ISA2nTJXY6M&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ"
+      "url": "https://www.youtube.com/watch?v=ISA2nTJXY6M&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ"
     },
     {
       "id": 2,
@@ -29,7 +30,7 @@ let exercise_data = [
       "goal": "meditation",
       "activityImpact": "low",
       "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=oopQVhtdeLo&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=3"
+      "url": "https://www.youtube.com/watch?v=oopQVhtdeLo&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=3"
     },
     {
       "id": 3,
@@ -37,7 +38,7 @@ let exercise_data = [
       "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=GvLLukzIW7c&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=12"
+      "url": "https://www.youtube.com/watch?v=GvLLukzIW7c&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=12"
     },
     {
       "id": 4,
@@ -45,7 +46,7 @@ let exercise_data = [
       "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [10,30],
-      "youtube": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
+      "url": "https://www.youtube.com/watch?v=xWLbvxX44wo&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p"
     },
     {
       "id": 5,
@@ -53,7 +54,7 @@ let exercise_data = [
       "goal": "meditation",
       "activityImpact": "low",
       "breakTime": [10,30],
-      "youtube": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
+      "url": "https://www.youtube.com/watch?v=Zc_acoueHMw&list=PLWoI875tcveNEtN7F69jreqLHa_v5Ho9p&index=12"
     },
     {
       "id": 6,
@@ -61,7 +62,7 @@ let exercise_data = [
       "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [0,5],
-      "youtube": "https://www.youtube.com/watch?v=Q-bVQXcfstY&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=47"
+      "url": "https://www.youtube.com/watch?v=Q-bVQXcfstY&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=47"
     },
     {
       "id": 7,
@@ -69,7 +70,7 @@ let exercise_data = [
       "goal": "flexibility",
       "activityImpact": "low",
       "breakTime": [0,5],
-      "youtube": "https://www.youtube.com/watch?v=FYh_XG2Z6iU&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=44"
+      "url": "https://www.youtube.com/watch?v=FYh_XG2Z6iU&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=44"
     },
     {
       "id": 8,
@@ -77,7 +78,7 @@ let exercise_data = [
       "goal": "cardio",
       "activityImpact": "high",
       "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=zr08J6wB53Y"
+      "url": "https://www.youtube.com/watch?v=zr08J6wB53Y"
     },
     {
       "id": 9,
@@ -85,7 +86,7 @@ let exercise_data = [
       "goal": "cardio",
       "activityImpact": "low",
       "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
+      "url": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
     },
     {
       "id": 10,
@@ -93,7 +94,7 @@ let exercise_data = [
       "goal": "strength",
       "activityImpact": "low",
       "breakTime": [5,10],
-      "youtube": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
+      "url": "https://www.youtube.com/watch?v=AnYl6Nk9GOA"
     },
     {
       "id": 11,
@@ -101,18 +102,25 @@ let exercise_data = [
       "goal": "cardio",
       "activityImpact": "high",
       "breakTime": [10,30],
-      "youtube": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
-    }
+      "url": "https://www.youtube.com/watch?v=QPKXw8XEQiA"
+    },
+    {
+      "id": 12,
+      "exerciseName": "Power Yoga",
+      "goal": "flexibility",
+      "activityImpact": "low",
+      "breakTime": [5,10],
+      "url": "https://www.youtube.com/watch?v=704f9VYk_yc&list=PLWoI875tcveP3aeg1RSwjuEzvflivySAQ&index=23"
+    },
 ]
 
 // TODO: modify frontend userprofile to match these key mapping
 let mockUserProfile = {
     activityImpact: "low",
     age: "33",
-    equipments: [],
     gender: "female",
     goal: "flexibility",
-    breakTime: "5"
+    breakTime: 5,
 }
 
 function runRecommendedService(exerciseData, userData) {
@@ -123,7 +131,8 @@ function runRecommendedService(exerciseData, userData) {
         breakTime > exercise.breakTime[0] && breakTime <= exercise.breakTime[1])
     })
     const randomIndex = Math.floor(Math.random() * filterData.length);
-    return filterData[randomIndex];
+    // Default to breathing exercise
+    return filterData[randomIndex] || exercise_data[0];
 }
 
 console.log("I'm recommending this exercise to you", runRecommendedService(exercise_data, mockUserProfile));
