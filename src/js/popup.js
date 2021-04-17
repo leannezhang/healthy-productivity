@@ -5,11 +5,11 @@ let badgeText;
 let timerStarted;
 let startTime;
 
-let focusTimeRemaining;
-let focusTimeDuration;
+let focusTimeRemainingMin;
+let focusTimeDurationSec;
 let $focusTimeRemainingDiv = document.getElementById("focusTimeRemaining");
 
-let breakTimeRemaining;
+let breakTimeRemainingMin;
 let breakTimeDuration;
 let $breakTimeRemainingDiv = document.getElementById("breakTimeRemaining");
 
@@ -74,19 +74,30 @@ chrome.storage.sync.get(["view"], function(result) {
 resetFocusTimerView();
 resetBreakTimeView();
 
+function secondsToMinuteAndSecondsFormat(seconds) {
+    let remainingMinute = Math.floor(seconds / 60);
+    let remainingSeconds = Math.floor(seconds % 60);
+    if (remainingMinute > 0 && remainingSeconds > 0) {
+      return remainingMinute + " m " +  remainingSeconds + " s";
+    } else if (remainingMinute > 0 && remainingSeconds == 0) {
+      return remainingMinute + " m"
+    } else {
+      return remainingSeconds + " s";
+    }
+}
+
 function resetFocusTimerView() {
   chrome.storage.sync.get(["focusTime"], function(result) {
-    focusTimeDuration = parseInt(result.focusTime);
-    focusTimeRemaining = focusTimeDuration;
-    $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
+    focusTimeDurationSec = parseInt(result.focusTime) * 60;
+    $focusTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(focusTimeDurationSec)
   });
 }
 
 function resetBreakTimeView() {
   chrome.storage.sync.get(["breakTime"], function(result) {
-    breakTimeDuration = parseInt(result.breakTime);
-    breakTimeRemaining = breakTimeDuration;
-    $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
+    breakTimeDuration = parseInt(result.breakTime) * 60;
+    breakTimeRemainingMin = breakTimeDuration;
+    $breakTimeRemainingDiv.textContent = breakTimeRemainingMin + " sec(s)";
   });
 }
 
@@ -105,11 +116,13 @@ function countDownFocusTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
-    let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
-    focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-    $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
+    let timeDiffInMillSecs = startTime + focusTimeDurationSec * 1000 - Date.now();
+    //focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 10000);
+    let focusTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
+    focusTimeRemainingMin = Math.ceil(focusTimeDurationSec / 60);
+    $focusTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec)
     chrome.browserAction.setBadgeText({
-      text: focusTimeRemaining.toString()
+      text: focusTimeRemainingMin.toString()
     });
   });
 }
@@ -118,11 +131,12 @@ function countDownBreakTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
-    let timeDiffInMillSecs = startTime + breakTimeDuration * 60000 - Date.now();
-    breakTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-    $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
+    let timeDiffInMillSecs = startTime + breakTimeDuration * 6000 - Date.now();
+    let breakTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
+    breakTimeRemainingMin = Math.ceil(breakTimeRemainingSec / 60);
+    $breakTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec)
     chrome.browserAction.setBadgeText({
-      text: breakTimeRemaining.toString()
+      text: breakTimeRemainingMin.toString()
     });
   });
 }
@@ -131,8 +145,8 @@ function setAlarm(event) {
   alarmName = event.target.name;
   if (alarmName === "focusAlarm") {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-    chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
-    badgeText = focusTimeRemaining + "m";
+    chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemainingMin });
+    badgeText = focusTimeRemainingMin + "m";
     chrome.runtime.sendMessage("", {
       type: "notification",
       options: {
@@ -145,8 +159,8 @@ function setAlarm(event) {
     });
   } else {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-    chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
-    badgeText = breakTimeRemaining + "m";
+    chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemainingMin });
+    badgeText = breakTimeRemainingMin + "m";
     chrome.runtime.sendMessage("", {
       type: "notification",
       options: {
