@@ -15,13 +15,15 @@ chrome.runtime.onInstalled.addListener(function() {
 let exerciseURL = '';
 
 // Listening incoming messages from content scripts like options.js and popup.js
-chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendReponse) => {
   if (message.type === "notification") {
     chrome.notifications.create(message.options);
   } else if (message.exceriseURL) {
     exerciseURL= message.exceriseURL;
-    console.log("exceriseURL is",exerciseURL)
+    console.log("excerise URL is",exerciseURL)
   }
+  // Fixed the issue (The message port closed before a response was received.)
+  return true;
 });
 
 chrome.alarms.onAlarm.addListener(function(alarms) {
