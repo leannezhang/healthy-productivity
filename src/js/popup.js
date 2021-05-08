@@ -117,7 +117,6 @@ function countDownFocusTimer() {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + focusTimeDurationSec * 1000 - Date.now();
-    //focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 10000);
     let focusTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
     focusTimeRemainingMin = Math.ceil(focusTimeDurationSec / 60);
     let focusTimeMinAndSec = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec);
@@ -143,12 +142,10 @@ function countDownFocusTimer() {
       // Open the recommneded exercise in the new window
       chrome.storage.sync.get(["exerciseURL"], function(result) {
         if (result) {
-          console.log("exercise result found: " + result);
+          console.log("Exercise result found: " + result);
           window.open(result.exerciseURL);
         }
       });
-    } else {
-      console.log(focusTimeRemainingSec + " is still positive")
     }
   });
 }
@@ -157,19 +154,13 @@ function countDownBreakTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
-    let timeDiffInMillSecs = startTime + breakTimeDuration * 6000 - Date.now();
+    let timeDiffInMillSecs = startTime + breakTimeDuration * 1000 - Date.now();
     let breakTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
     breakTimeRemainingMin = Math.ceil(breakTimeRemainingSec / 60);
-    $breakTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec)
-    //chrome.browserAction.setBadgeText({
-    //  text: breakTimeRemainingMin.toString()
-    //});
-    time_left = ""
-    chrome.alarms.get("focusAlarm", function(result){
-      console.log("timer result is " + result);
-    });
+    let breakTimeRemainingMinAndSec = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec);
+    $breakTimeRemainingDiv.textContent = breakTimeRemainingMinAndSec;
     chrome.browserAction.setBadgeText({
-      text: time_left
+      text: breakTimeRemainingMinAndSec.toString()
     });
   });
 }

@@ -24,6 +24,7 @@ let exerciseURL = '';
    }
  });
 
+//TODO save this logic for reference. but we should clean this up after refactoring.
 // chrome.alarms.onAlarm.addListener(function(alarms) {
 //   // When the focus alarm times up
 //   if (alarms.name === "focusAlarm") {
