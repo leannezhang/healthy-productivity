@@ -10,8 +10,6 @@ function sendRecommendedExerciseToBackgroundJS(userInputs) {
   console.log('sending exercise url', exercise.url);
   chrome.runtime.sendMessage({
     exceriseURL: exercise.url
-  }).then(function (response) {
-    console.log("exercise url is sent", response)
   })
 }
 
