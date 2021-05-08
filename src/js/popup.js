@@ -120,10 +120,36 @@ function countDownFocusTimer() {
     //focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 10000);
     let focusTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
     focusTimeRemainingMin = Math.ceil(focusTimeDurationSec / 60);
-    $focusTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec)
+    let focusTimeMinAndSec = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec);
+    $focusTimeRemainingDiv.textContent = focusTimeMinAndSec;
     chrome.browserAction.setBadgeText({
-      text: focusTimeRemainingMin.toString()
+      text: focusTimeMinAndSec.toString()
     });
+
+    if (focusTimeRemainingSec <= 0) {
+      chrome.storage.sync.set(
+        { view: "breakView", timerStarted: false, startTime: 0 },
+        function() {
+          console.log("The view is breakView");
+        }
+      );
+      chrome.notifications.create({
+        title: "Time for a break",
+        message:
+          "It's time for a relaxing break.",
+        iconUrl: "src/images/get_started128.png",
+        type: "basic"
+      });
+      // Open the recommneded exercise in the new window
+      chrome.storage.sync.get(["exerciseURL"], function(result) {
+        if (result) {
+          console.log("exercise result found: " + result);
+          window.open(result.exerciseURL);
+        }
+      });
+    } else {
+      console.log(focusTimeRemainingSec + " is still positive")
+    }
   });
 }
 
@@ -135,8 +161,15 @@ function countDownBreakTimer() {
     let breakTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
     breakTimeRemainingMin = Math.ceil(breakTimeRemainingSec / 60);
     $breakTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec)
+    //chrome.browserAction.setBadgeText({
+    //  text: breakTimeRemainingMin.toString()
+    //});
+    time_left = ""
+    chrome.alarms.get("focusAlarm", function(result){
+      console.log("timer result is " + result);
+    });
     chrome.browserAction.setBadgeText({
-      text: breakTimeRemainingMin.toString()
+      text: time_left
     });
   });
 }
@@ -145,6 +178,7 @@ function setAlarm(event) {
   alarmName = event.target.name;
   if (alarmName === "focusAlarm") {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
+    console.log("creating focus alarm"  )
     chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemainingMin });
     badgeText = focusTimeRemainingMin + "m";
     chrome.runtime.sendMessage("", {
@@ -159,6 +193,7 @@ function setAlarm(event) {
     });
   } else {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
+    console.log("creating break alarm"  )
     chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemainingMin });
     badgeText = breakTimeRemainingMin + "m";
     chrome.runtime.sendMessage("", {
