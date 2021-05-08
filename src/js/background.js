@@ -7,7 +7,6 @@ chrome.runtime.onInstalled.addListener(function() {
     breakTime: 5,
     focusTime: 30,
     // Can combine timerStarted and startTime into one variable
-    timerStarted: false,
     startTime: 0
   });
 });
@@ -15,7 +14,7 @@ chrome.runtime.onInstalled.addListener(function() {
 let exerciseURL = '';
 
 // Listening incoming messages from content scripts like options.js and popup.js
-chrome.runtime.onMessage.addListener(async (message, sender, sendReponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   if (message.type === "notification") {
     chrome.notifications.create(message.options);
   } else if (message.exceriseURL) {

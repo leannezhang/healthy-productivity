@@ -52,8 +52,10 @@ function secondsToMinuteAndSecondsFormat(seconds) {
       return remainingMinute + " m " +  remainingSeconds + " s";
     } else if (remainingMinute > 0 && remainingSeconds == 0) {
       return remainingMinute + " m"
-    } else {
+    } else if (remainingSeconds >= 0) {
       return remainingSeconds + " s";
+    } else {
+      return "0 s"
     }
 }
 
@@ -73,41 +75,42 @@ function resetBreakTimeView() {
 }
 
 function countDown() {
-  chrome.storage.sync.get(["timerStarted"], function(result) {
-    timerStarted = result.timerStarted;
+  chrome.storage.sync.get(["startTime"], function(result) {
+    timerStarted = result.startTime !== 0;
     if (timerStarted && view === "focusView") {
-      countDownFocusTimer();
+      displayCountDownFocusTimer();
     } else if (timerStarted && view === "breakView") {
-      countDownBreakTimer();
+      displayCountDownBreakTimer();
     }
   });
 }
 
-function countDownFocusTimer() {
+function displayCountDownFocusTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + focusTimeDurationSec * 1000 - Date.now();
-    //focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 10000);
     let focusTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
     focusTimeRemainingMin = Math.ceil(focusTimeDurationSec / 60);
-    $focusTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec)
+    let focusTimeRemainingDisplayValue = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec)
+    $focusTimeRemainingDiv.textContent = focusTimeRemainingDisplayValue
     chrome.browserAction.setBadgeText({
-      text: focusTimeRemainingMin.toString()
+      text: focusTimeRemainingDisplayValue
     });
   });
 }
 
-function countDownBreakTimer() {
+function displayCountDownBreakTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + breakTimeDuration * 6000 - Date.now();
     let breakTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
     breakTimeRemainingMin = Math.ceil(breakTimeRemainingSec / 60);
-    $breakTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec)
+    let breakTimeRemainingDisplayValue = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec);
+    $breakTimeRemainingDiv.textContent = breakTimeRemainingDisplayValue;
     chrome.browserAction.setBadgeText({
-      text: breakTimeRemainingMin.toString()
+      text: breakTimeRemainingDisplayValue
     });
   });
 }
@@ -144,12 +147,11 @@ function setAlarm(event) {
     });
   }
   chrome.browserAction.setBadgeText({ text: badgeText });
-  // window.close();
 }
 
 function clearAlarm() {
   chrome.alarms.clearAll();
-  chrome.storage.sync.set({ timerStarted: false });
+  chrome.storage.sync.set({ startTime: 0 });
   chrome.browserAction.setBadgeText({ text: "" });
   if (view === "focusView") {
     resetFocusTimerView();
