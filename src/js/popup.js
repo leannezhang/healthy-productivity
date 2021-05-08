@@ -11,9 +11,6 @@ let focusTimeDurationSec;
 let breakTimeRemainingMin;
 let breakTimeDuration;
 
-let activityCategory;
-let activityLst;
-
 let view;
 let showView;
 let hideView;
