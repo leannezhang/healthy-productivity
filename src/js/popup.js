@@ -5,22 +5,19 @@ let badgeText;
 let timerStarted;
 let startTime;
 
-let focusTimeRemaining;
-let focusTimeDuration;
-let $focusTimeRemainingDiv = document.getElementById("focusTimeRemaining");
+let focusTimeRemainingMin;
+let focusTimeDurationSec;
 
-let breakTimeRemaining;
+let breakTimeRemainingMin;
 let breakTimeDuration;
-let $breakTimeRemainingDiv = document.getElementById("breakTimeRemaining");
-
-let activityCategory;
-let activityLst;
 
 let view;
 let showView;
 let hideView;
-
 let timerId;
+
+let $focusTimeRemainingDiv = document.getElementById("focusTimeRemaining");
+let $breakTimeRemainingDiv = document.getElementById("breakTimeRemaining");
 
 chrome.storage.sync.get(["timerStarted"], function(result) {
   timerStarted = result.timerStarted;
@@ -28,16 +25,6 @@ chrome.storage.sync.get(["timerStarted"], function(result) {
 
 chrome.storage.sync.get(["startTime"], function(result) {
   startTime = result.startTime;
-});
-
-chrome.storage.sync.get(["activityCategory"], function(result) {
-  activityCategory = result.activityCategory;
-  console.log("Selected activity is " + activityCategory);
-});
-
-chrome.storage.sync.get(["activityLst"], function(result) {
-  activityLst = result.activityLst;
-  console.log("Provided activity list is " + activityLst);
 });
 
 chrome.storage.sync.get(["view"], function(result) {
@@ -52,77 +39,78 @@ chrome.storage.sync.get(["view"], function(result) {
     showView.classList.remove("hide");
     hideView = document.getElementById("focusTimeDiv");
     hideView.classList.add("hide");
-
-    chrome.storage.sync.get(["activityLst"], function(result) {
-      activityLst = result.activityLst;
-      console.log("Provided activity list is " + activityLst);
-    });
-
-    chrome.storage.sync.get(["activityCategory"], function(result) {
-      activityCategory = result.activityCategory;
-      console.log("Selected activity is " + activityCategory);
-    });
-
-    var a = document.createElement("a");
-    a.setAttribute('href', activityLst);
-    var breakActivityDiv = document.getElementById("breakActivityDiv")
-    breakActivityDiv.innerHTML = "Link to <b>" + activityCategory + "</b>: <br/> <a href='" + activityLst + "'>" + activityCategory + " Video</a><br/>";
-//    breakActivityDiv.appendChild(a);
   }
 });
 
 resetFocusTimerView();
 resetBreakTimeView();
 
+function secondsToMinuteAndSecondsFormat(seconds) {
+    let remainingMinute = Math.floor(seconds / 60);
+    let remainingSeconds = Math.floor(seconds % 60);
+    if (remainingMinute > 0 && remainingSeconds > 0) {
+      return remainingMinute + " m " +  remainingSeconds + " s";
+    } else if (remainingMinute > 0 && remainingSeconds == 0) {
+      return remainingMinute + " m"
+    } else if (remainingSeconds >= 0) {
+      return remainingSeconds + " s";
+    } else {
+      return "0 s"
+    }
+}
+
 function resetFocusTimerView() {
   chrome.storage.sync.get(["focusTime"], function(result) {
-    focusTimeDuration = parseInt(result.focusTime);
-    focusTimeRemaining = focusTimeDuration;
-    $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
+    focusTimeDurationSec = parseInt(result.focusTime) * 60;
+    $focusTimeRemainingDiv.textContent = secondsToMinuteAndSecondsFormat(focusTimeDurationSec)
   });
 }
 
 function resetBreakTimeView() {
   chrome.storage.sync.get(["breakTime"], function(result) {
-    breakTimeDuration = parseInt(result.breakTime);
-    breakTimeRemaining = breakTimeDuration;
-    $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
+    breakTimeDuration = parseInt(result.breakTime) * 60;
+    breakTimeRemainingMin = breakTimeDuration;
+    $breakTimeRemainingDiv.textContent = breakTimeRemainingMin + " sec(s)";
   });
 }
 
 function countDown() {
-  chrome.storage.sync.get(["timerStarted"], function(result) {
-    timerStarted = result.timerStarted;
+  chrome.storage.sync.get(["startTime"], function(result) {
+    timerStarted = result.startTime !== 0;
     if (timerStarted && view === "focusView") {
-      countDownFocusTimer();
+      displayCountDownFocusTimer();
     } else if (timerStarted && view === "breakView") {
-      countDownBreakTimer();
+      displayCountDownBreakTimer();
     }
   });
 }
 
-function countDownFocusTimer() {
+function displayCountDownFocusTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
-    let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
-    focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-    $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
+    let timeDiffInMillSecs = startTime + focusTimeDurationSec * 1000 - Date.now();
+    let focusTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
+    focusTimeRemainingMin = Math.ceil(focusTimeDurationSec / 60);
+    let focusTimeRemainingDisplayValue = secondsToMinuteAndSecondsFormat(focusTimeRemainingSec)
+    $focusTimeRemainingDiv.textContent = focusTimeRemainingDisplayValue
     chrome.browserAction.setBadgeText({
-      text: focusTimeRemaining.toString()
+      text: focusTimeRemainingDisplayValue
     });
   });
 }
 
-function countDownBreakTimer() {
+function displayCountDownBreakTimer() {
   chrome.storage.sync.get(["startTime"], function(result) {
     startTime = result.startTime;
     // 60,000 is to convert mins to millsecs
-    let timeDiffInMillSecs = startTime + breakTimeDuration * 60000 - Date.now();
-    breakTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-    $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
+    let timeDiffInMillSecs = startTime + breakTimeDuration * 6000 - Date.now();
+    let breakTimeRemainingSec = Math.ceil(timeDiffInMillSecs / 1000);
+    breakTimeRemainingMin = Math.ceil(breakTimeRemainingSec / 60);
+    let breakTimeRemainingDisplayValue = secondsToMinuteAndSecondsFormat(breakTimeRemainingSec);
+    $breakTimeRemainingDiv.textContent = breakTimeRemainingDisplayValue;
     chrome.browserAction.setBadgeText({
-      text: breakTimeRemaining.toString()
+      text: breakTimeRemainingDisplayValue
     });
   });
 }
@@ -131,8 +119,8 @@ function setAlarm(event) {
   alarmName = event.target.name;
   if (alarmName === "focusAlarm") {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-    chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
-    badgeText = focusTimeRemaining + "m";
+    chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemainingMin });
+    badgeText = focusTimeRemainingMin + "m";
     chrome.runtime.sendMessage("", {
       type: "notification",
       options: {
@@ -145,8 +133,8 @@ function setAlarm(event) {
     });
   } else {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-    chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
-    badgeText = breakTimeRemaining + "m";
+    chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemainingMin });
+    badgeText = breakTimeRemainingMin + "m";
     chrome.runtime.sendMessage("", {
       type: "notification",
       options: {
@@ -159,12 +147,11 @@ function setAlarm(event) {
     });
   }
   chrome.browserAction.setBadgeText({ text: badgeText });
-  // window.close();
 }
 
 function clearAlarm() {
   chrome.alarms.clearAll();
-  chrome.storage.sync.set({ timerStarted: false });
+  chrome.storage.sync.set({ startTime: 0 });
   chrome.browserAction.setBadgeText({ text: "" });
   if (view === "focusView") {
     resetFocusTimerView();
@@ -182,7 +169,9 @@ timerId = setInterval(countDown, 1000);
 function addEventListenerIfButtonExists(buttonId, event) {
   var button = document
     .getElementById(buttonId)
+
   if (button){
+    console.log(buttonId + " button clicked")
     button.addEventListener("click", event)
   }
 }

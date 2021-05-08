@@ -7,7 +7,6 @@ chrome.runtime.onInstalled.addListener(function() {
     breakTime: 5,
     focusTime: 30,
     // Can combine timerStarted and startTime into one variable
-    timerStarted: false,
     startTime: 0
   });
 });
@@ -20,8 +19,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
     chrome.notifications.create(message.options);
   } else if (message.exceriseURL) {
     exerciseURL= message.exceriseURL;
-    console.log("exceriseURL is",exerciseURL)
+    console.log("excerise URL is",exerciseURL)
   }
+  // Fixed the issue (The message port closed before a response was received.)
+  return true;
 });
 
 chrome.alarms.onAlarm.addListener(function(alarms) {

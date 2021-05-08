@@ -10,8 +10,6 @@ function sendRecommendedExerciseToBackgroundJS(userInputs) {
   console.log('sending exercise url', exercise.url);
   chrome.runtime.sendMessage({
     exceriseURL: exercise.url
-  }, function(response) {
-    console.log("exercise url is sent", response)
   })
 }
 
@@ -29,37 +27,38 @@ function prepopulatingUIDataFromStorage() {
 
   chrome.storage.sync.get(["userProfile"], function(result) {
     if (result) {
+        if (result.profile) {
+          const { gender, age, activityImpact, goal } = result.userProfile;
+          switch (gender) {
+            case 'female': {
+              femaleGenderInput.checked = true;
+              break;
+            }
+            case 'male': {
+              maleGenderInput.checked = true;
+              break;
+            }
+          }
+        
+          if (age) {
+            ageInput.value = age;
+          }
+        
+          switch (activityImpact) {
+            case 'high-impact': {
+              highImpactActivity.checked = true;
+              break;
+            }
+            case 'low-impact': {
+              lowImpactActivity.checked = true;
+              break;
+            }
+          }
 
-        const { gender, age, activityImpact, goal } = result.userProfile;
-        switch (gender) {
-          case 'female': {
-            femaleGenderInput.checked = true;
-            break;
+          if (goal) {
+            goalInput.value = goal;
           }
-          case 'male': {
-            maleGenderInput.checked = true;
-            break;
-          }
-        }
-      
-        if (age) {
-          ageInput.value = age;
-        }
-      
-        switch (activityImpact) {
-          case 'high-impact': {
-            highImpactActivity.checked = true;
-            break;
-          }
-          case 'low-impact': {
-            lowImpactActivity.checked = true;
-            break;
-          }
-        }
-
-        if (goal) {
-          goalInput.value = goal;
-        }
+      }
     }
   });
   
