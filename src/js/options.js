@@ -1,8 +1,3 @@
-function recommendExercise() {
-  // data massage and do recommendations
-  console.log('TODO')
-}
-
 function setUserProfileToChromeStorage(userProfileInputs) {
   console.log('setUserProfileToChromeStorage');
   chrome.storage.sync.set({ "userProfile": userProfileInputs }, function () {
@@ -24,37 +19,38 @@ function prepopulatingUIDataFromStorage() {
 
   chrome.storage.sync.get(["userProfile"], function(result) {
     if (result) {
+        if (result.userProfile) {
+          const { gender, age, activityImpact, goal } = result.userProfile;
+          switch (gender) {
+            case 'female': {
+              femaleGenderInput.checked = true;
+              break;
+            }
+            case 'male': {
+              maleGenderInput.checked = true;
+              break;
+            }
+          }
+        
+          if (age) {
+            ageInput.value = age;
+          }
+        
+          switch (activityImpact) {
+            case 'high-impact': {
+              highImpactActivity.checked = true;
+              break;
+            }
+            case 'low-impact': {
+              lowImpactActivity.checked = true;
+              break;
+            }
+          }
 
-        const { gender, age, activityImpact, goal } = result.userProfile;
-        switch (gender) {
-          case 'female': {
-            femaleGenderInput.checked = true;
-            break;
+          if (goal) {
+            goalInput.value = goal;
           }
-          case 'male': {
-            maleGenderInput.checked = true;
-            break;
-          }
-        }
-      
-        if (age) {
-          ageInput.value = age;
-        }
-      
-        switch (activityImpact) {
-          case 'high-impact': {
-            highImpactActivity.checked = true;
-            break;
-          }
-          case 'low-impact': {
-            lowImpactActivity.checked = true;
-            break;
-          }
-        }
-
-        if (goal) {
-          goalInput.value = goal;
-        }
+      }
     }
   });
   
