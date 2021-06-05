@@ -38,6 +38,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   } else if (message.exceriseURL) {
     exerciseURL= message.exceriseURL;
     console.log("exceriseURL is",exerciseURL)
+  } else if (message.timerInitialDurationMin) {
+    initialDurationMs = message.timerInitialDurationMin;
+    console.log("timer init duration received")
+    if (timerState != running){
+      console.log("Setting badge")
+      remainingMs = initialDurationMs * 60 * 1000 ;
+      chrome.browserAction.setBadgeText({text: displayRemainingTime(remainingMs)})
+    } else {
+      console.log("Timer is running, not updating badge text")
+    }
+  } else {
+    console.log("Caught unmatched message", message)
+
   }
 });
 
@@ -139,7 +152,7 @@ let stopped = 'stopped'
 
 let startTime;
 let remainingMs = 0;
-let initialDuration = 0;
+let initialDurationMs = 0;
 //timer functions
 function getTimerTime() {
   return currentTime
@@ -151,7 +164,7 @@ function getTimerTime() {
 //}
 
 function initTimer(timer_duration_ms) {
-  initialDuration = timer_duration_ms;
+  initialDurationMs = timer_duration_ms;
   remainingMs = timer_duration_ms;
   timerState = stopped;
 }
@@ -166,7 +179,7 @@ function startTimer(timer_duration_ms) {
 function resetTimer() {
   console.log("stopped timer")
   timerState = stopped;
-  remainingMs = initialDuration;
+  remainingMs = initialDurationMs;
 };
 
 //function pauseTimer() {
