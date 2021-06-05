@@ -22,6 +22,12 @@ let hideView;
 
 let timerId;
 
+let backgroundPage
+chrome.runtime.getBackgroundPage(function (bg) {
+  console.log(`Got bg ${bg}`);
+  backgroundPage = bg;
+})
+
 chrome.storage.sync.get(["timerStarted"], function(result) {
   timerStarted = result.timerStarted;
 });
@@ -82,9 +88,9 @@ function countDownFocusTimer() {
     let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
     focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
     $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
-    // chrome.browserAction.setBadgeText({
-    //   text: focusTimeRemaining.toString()
-    // });
+    chrome.browserAction.setBadgeText({
+      text: focusTimeRemaining.toString()
+    });
   });
 }
 
@@ -95,44 +101,31 @@ function countDownBreakTimer() {
     let timeDiffInMillSecs = startTime + breakTimeDuration * 60000 - Date.now();
     breakTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
     $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
-    // chrome.browserAction.setBadgeText({
-    //   text: breakTimeRemaining.toString()
-    // });
+    chrome.browserAction.setBadgeText({
+      text: breakTimeRemaining.toString()
+    });
   });
 }
 
 function setAlarm(event) {
+  console.log('setting alarm')
   alarmName = event.target.name;
   if (alarmName === "focusAlarm") {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
     chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
     badgeText = focusTimeRemaining + "m";
-    chrome.runtime.sendMessage("", {
-      type: "notification",
-      options: {
-        title: "Time to focus",
-        message:
-          "Time to focus now. You will get a notification when its time for your break!",
-        iconUrl: "src/images/get_started128.png",
-        type: "basic"
-      }
-    });
+    console.log(`bg is ${backgroundPage}`)
+    console.log(`bg value is ${backgroundPage.toBreakView}`)
+    backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
   } else {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
     chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
     badgeText = breakTimeRemaining + "m";
-    chrome.runtime.sendMessage("", {
-      type: "notification",
-      options: {
-        title: "Time for a break",
-        message:
-          "Time to a break now. You will get a notification when the break is up.",
-        iconUrl: "src/images/get_started128.png",
-        type: "basic"
-      }
-    });
+    console.log(`bg is ${backgroundPage}`)
+    console.log(`bg value is ${backgroundPage.toBreakView}`)
+    backgroundPage.changeNotificationStage(backgroundPage.toBreakView)
   }
-  // chrome.browserAction.setBadgeText({ text: badgeText });
+  chrome.browserAction.setBadgeText({ text: badgeText });
   // window.close();
 }
 
