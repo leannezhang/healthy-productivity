@@ -58,7 +58,7 @@ function resetFocusTimerView() {
   chrome.storage.sync.get(["focusTime"], function(result) {
     focusTimeDuration = parseInt(result.focusTime);
     focusTimeRemaining = focusTimeDuration;
-    $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
+    // $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
   });
 }
 
@@ -66,7 +66,7 @@ function resetBreakTimeView() {
   chrome.storage.sync.get(["breakTime"], function(result) {
     breakTimeDuration = parseInt(result.breakTime);
     breakTimeRemaining = breakTimeDuration;
-    $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
+    // $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
   });
 }
 
@@ -87,7 +87,7 @@ function countDownFocusTimer() {
     // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
     focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-    $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
+    // $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
     chrome.browserAction.setBadgeText({
       text: focusTimeRemaining.toString()
     });
@@ -100,13 +100,16 @@ function countDownBreakTimer() {
     // 60,000 is to convert mins to millsecs
     let timeDiffInMillSecs = startTime + breakTimeDuration * 60000 - Date.now();
     breakTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-    $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
+    // $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
     chrome.browserAction.setBadgeText({
       text: breakTimeRemaining.toString()
     });
   });
 }
 
+
+
+// new 
 function startFocusTimer(event) {
   console.log('starting focus alarm');
   chrome.storage.sync.get(["focusTime"], function(result) {
@@ -114,12 +117,50 @@ function startFocusTimer(event) {
     backgroundPage.startTimer(duration_ms)
   });
   backgroundPage.changeNotificationStage(backgroundPage.toFocusView);
+  backgroundPage.timerState = backgroundPage.inFocusView;
 }
 
+// new
 function stopFocusTimer(event) {
   console.log('stopping focus alarm');
   backgroundPage.resetTimer()
+  backgroundPage.timerState = backgroundPage.noView;
 }
+
+// new
+function startBreakTimer(event) {
+  console.log('starting break alarm');
+  chrome.storage.sync.get(["breakTime"], function(result) {
+    let duration_ms = result.breakTime * 60 * 1000
+    backgroundPage.startTimer(duration_ms)
+  });
+  backgroundPage.changeNotificationStage(backgroundPage.toBreakView);
+  backgroundPage.timerState = backgroundPage.inBreakView;
+}
+
+// new
+function stopBreakTimer(event) {
+  console.log('stopping break alarm');
+  backgroundPage.resetTimer()
+  backgroundPage.timerState = backgroundPage.noView;
+}
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
+  console.log("bg is ", backgroundPage)
+  console.log("bg signal is ", backgroundPage.updatePopupTextSignal)
+  if (message.type === backgroundPage.updatePopupTextSignal) {
+    if (message.viewState === backgroundPage.inFocusView){
+      $focusTimeRemainingDiv.textContent = message.value;
+    } else if (message.viewState === backgroundPage.inBreakView) {
+      $breakTimeRemainingDiv.textContent = message.value;
+    } else {
+      console.log("Popup update initiated, but no view state matched");
+    }
+  } else {
+    console.log("Popup: Caught unmatched message", message)
+  }
+});
 
 function setAlarm(event) {
   console.log('setting alarm')
@@ -167,14 +208,16 @@ function addEventListenerIfButtonExists(buttonId, event) {
 }
 addEventListenerIfButtonExists("startFocusTimerButton", startFocusTimer)
 addEventListenerIfButtonExists("stopFocusTimerButton", stopFocusTimer)
-addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
-addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
+addEventListenerIfButtonExists("startBreakTimerButton", startBreakTimer)
+addEventListenerIfButtonExists("stopBreakTimerButton", stopFocusTimer)
 
 function initTimer(event) {
   console.log('starting focus alarm');
-  chrome.storage.sync.get(["focusTime"], function(result) {
-    let duration_ms = result.focusTime * 60 * 1000
-    backgroundPage.initTimer(duration_ms)
-  });
+  if (backgroundPage.timerState === backgroundPage.unInit ) {
+    chrome.storage.sync.get(["focusTime"], function(result) {
+      let duration_ms = result.focusTime * 60 * 1000
+      backgroundPage.initTimer(duration_ms)
+    });
+  }
 }
 initTimer()

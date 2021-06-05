@@ -1,9 +1,10 @@
 "use strict";
-
+// public
 var toBreakView = 'toBreakView'
 var exitingBreakView = 'exitingBreakView'
 var toFocusView = 'toFocusView'
 var exitingFocusView = 'exitingFocusView'
+var updatePopupTextSignal = 'updatePopupTextSignal';
 
 
 console.log("evaluating background")
@@ -142,17 +143,26 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
 });
 
 
+// private
 // timer meta
 // could be one of
 // running || paused || stopped 
-let timerState;
-let running = 'running'
-let paused = 'paused'
-let stopped = 'stopped'
+var timerState;
+var running = 'running'
+var paused = 'paused'
+var stopped = 'stopped'
+var unInit = 'unInit'
 
 let startTime;
 let remainingMs = 0;
 let initialDurationMs = 0;
+
+let viewState;
+let inFocusView = 'inFocusView';
+let inBreakView = 'inBreakView';
+let noView = 'noView';
+
+
 //timer functions
 function getTimerTime() {
   return currentTime
@@ -189,7 +199,7 @@ function resetTimer() {
 //  timerState = running
 //};
 
-function displayRemainingTime(duration_ms) {
+function displayRemainingTime(duration_ms, badgeMode=false) {
   if (duration_ms === 0) {
     return '0s'
   }
@@ -209,7 +219,11 @@ function displayRemainingTime(duration_ms) {
       return displayTime
     }
     // badget supports max character 4. but we can sneak in a colon here
-    displayTime = minutes.toString() + ":" + seconds.toString();
+    if (badgeMode) {
+      displayTime = minutes.toString() + ":" + seconds.toString();
+      return displayTime
+    }
+    displayTime = minutes.toString() + "min(s) " + seconds.toString() + "s";
     console.log(`duration is over 60, returing ${displayTime}`)
     return  displayTime
   }
@@ -231,6 +245,15 @@ setInterval(function () {
         console.log("Timer is stopped");
         break;
   }
-  let remainingTime = displayRemainingTime(remainingMs);
-  chrome.browserAction.setBadgeText({ text: remainingTime.toString() });
+  chrome.browserAction.setBadgeText({
+     text: displayRemainingTime(remainingMs, true).toString()
+  });
+  chrome.runtime.sendMessage(
+    { type: updatePopupTextSignal,
+      viewState: viewState,
+      value: displayRemainingTime(remainingMs).toString()
+    }, function (response)  {
+      console.log("popup update signal sent");
+    }
+  )
 }, interval_ms);
