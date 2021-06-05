@@ -6,6 +6,7 @@ var toFocusView = 'toFocusView'
 var exitingFocusView = 'exitingFocusView'
 var updatePopupTextSignal = 'updatePopupTextSignal';
 var updatePopupViewSignal = 'updatePopupViewSignal';
+var timesupSignal = 'timesupSignal';
 
 // timer meta
 // could be one of
@@ -37,14 +38,14 @@ console.log("evaluating background")
 
 let exerciseURL = '';
 
-function setFocusTimeAlarm() {
-  chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-  chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
-  badgeText = focusTimeRemaining + "m";
-  console.log(`bg is ${backgroundPage}`)
-  console.log(`bg value is ${backgroundPage.toBreakView}`)
-  backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
-};
+//function setFocusTimeAlarm() {
+//  chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
+//  chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
+//  badgeText = focusTimeRemaining + "m";
+//  console.log(`bg is ${backgroundPage}`)
+//  console.log(`bg value is ${backgroundPage.toBreakView}`)
+//  backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
+//};
 // function setBreakTimeAlarm();
 
 // Listening incoming messages from content scripts like options.js and popup.js
@@ -105,58 +106,57 @@ function changeNotificationStage (type) {
   }
 }
 
-function setFocustimeAlarm () {
-    chrome.storage.sync.set(
-      { view: "breakView", timerStarted: false, startTime: 0 },
-      function() {
-        console.log("The view is breakView");
-      }
-    );
-    toggleNotificationText("toBreakView")
-}
+//function setFocustimeAlarm () {
+//    chrome.storage.sync.set(
+//      { view: "breakView", timerStarted: false, startTime: 0 },
+//      function() {
+//        console.log("The view is breakView");
+//      }
+//    );
+//    toggleNotificationText("toBreakView")
+//}
+//
+//function setBreaktimeAlarm() {
+//    chrome.storage.sync.set(
+//      { view: "focusView", timerStarted: false, startTime: 0 },
+//      function() {
+//        console.log("The view id focusView");
+//      }
+//    );
+//    //chrome.notifications.create({
+//    //  title: "Break is over",
+//    //  message: "Break is over. Time to focus now! Click on the timer to start.",
+//    //  iconUrl: "src/images/get_started128.png",
+//    //  type: "basic"
+//    //});
+//    changeNotificationStage(exitingBreakView)
+//}
 
-function setBreaktimeAlarm() {
-    chrome.storage.sync.set(
-      { view: "focusView", timerStarted: false, startTime: 0 },
-      function() {
-        console.log("The view id focusView");
-      }
-    );
-    //chrome.notifications.create({
-    //  title: "Break is over",
-    //  message: "Break is over. Time to focus now! Click on the timer to start.",
-    //  iconUrl: "src/images/get_started128.png",
-    //  type: "basic"
-    //});
-    changeNotificationStage(exitingBreakView)
-}
-
-chrome.alarms.onAlarm.addListener(function(alarms) {
-  // When the focus alarm times up
-  if (alarms.name === "focusAlarm") {
-    // seems like when the windows is not closed, the notification bar would not appear
-    chrome.storage.sync.set(
-      { view: "breakView", timerStarted: false, startTime: 0 },
-      function() {
-        console.log("The view is breakView");
-      }
-    );
-    changeNotificationStage(toBreakView)
-    // Open the recommneded exercise in the new window
-    window.open(exerciseURL)
-  // When the break alarm times up
-  } else {
-    chrome.storage.sync.set(
-      { view: "focusView", timerStarted: false, startTime: 0 },
-      function() {
-        console.log("The view id focusView");
-      }
-    );
-    changeNotificationStage(exitingBreakView)
-  }
-  chrome.browserAction.setBadgeText({ text: "" });
-});
-
+//chrome.alarms.onAlarm.addListener(function(alarms) {
+//  // When the focus alarm times up
+//  if (alarms.name === "focusAlarm") {
+//    // seems like when the windows is not closed, the notification bar would not appear
+//    chrome.storage.sync.set(
+//      { view: "breakView", timerStarted: false, startTime: 0 },
+//      function() {
+//        console.log("The view is breakView");
+//      }
+//    );
+//    changeNotificationStage(toBreakView)
+//    // Open the recommneded exercise in the new window
+//    window.open(exerciseURL)
+//  // When the break alarm times up
+//  } else {
+//    chrome.storage.sync.set(
+//      { view: "focusView", timerStarted: false, startTime: 0 },
+//      function() {
+//        console.log("The view id focusView");
+//      }
+//    );
+//    changeNotificationStage(exitingBreakView)
+//  }
+//  chrome.browserAction.setBadgeText({ text: "" });
+//});
 
 
 let startTime;
@@ -227,15 +227,32 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
 }
 
 let interval_ms = 1000
+// useful for debug if you want to fastward time
+let time_coefficient = 10
 setInterval(function () {
   console.log("counting down in view", viewState)
   switch (timerState) {
     case running:
-        remainingMs -= interval_ms
+        remainingMs -= interval_ms * time_coefficient
         console.log("Timer is running state, counting down")
         if (remainingMs <= 0) {
-          console.log("time is up")
           timerState = stopped
+          if (viewState === inFocusView) {
+            viewState = inBreakView
+
+            //window.open(exerciseURL)
+          } else {
+            viewState = inFocusView
+          }
+          chrome.runtime.sendMessage(
+            { type: timesupSignal,
+              nextViewState: viewState,
+              value: displayRemainingTime(remainingMs).toString()
+            }, function (response)  {
+              console.log("popup update signal sent");
+            }
+          )
+          console.log("time is up, changing to view ", viewState)
         }
         break;
     case stopped:
@@ -245,6 +262,7 @@ setInterval(function () {
   chrome.browserAction.setBadgeText({
      text: displayRemainingTime(remainingMs, true).toString()
   });
+  // update popup timer message in foreground
   chrome.runtime.sendMessage(
     { type: updatePopupTextSignal,
       viewState: viewState,
@@ -253,6 +271,7 @@ setInterval(function () {
       console.log("popup update signal sent");
     }
   )
+  // update popup html view in foreground
   chrome.runtime.sendMessage(
     {
       type: updatePopupViewSignal,

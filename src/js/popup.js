@@ -65,10 +65,7 @@ function changeView(view) {
 function initTimer() {
   console.log('starting focus alarm');
   if (backgroundPage.timerState === backgroundPage.unInit ) {
-    chrome.storage.sync.get(["focusTime"], function(result) {
-      let duration_ms = result.focusTime * 60 * 1000
-      backgroundPage.initTimer(duration_ms)
-    });
+    initFocusTimer();
   }
 };
 
@@ -162,6 +159,15 @@ function stopFocusTimer(event) {
   backgroundPage.resetTimer()
   backgroundPage.viewState = backgroundPage.inBreakView;
   console.log('stopping focus alarm and chaning to break view', backgroundPage.viewState);
+
+  initBreakTimer();
+}
+
+function initBreakTimer() {
+  chrome.storage.sync.get(["breakTime"], function(result) {
+    let duration_ms = result.breakTime * 60 * 1000
+    backgroundPage.initTimer(duration_ms)
+  });
 }
 
 // new
@@ -175,12 +181,21 @@ function startBreakTimer(event) {
   backgroundPage.timerState = backgroundPage.inBreakView;
 }
 
+function initFocusTimer() {
+  chrome.storage.sync.get(["focusTime"], function(result) {
+    let duration_ms = result.focusTime * 60 * 1000
+    backgroundPage.initTimer(duration_ms)
+  });
+}
+
 // new
 function stopBreakTimer(event) {
   console.log('stopping break alarm');
   backgroundPage.resetTimer()
   backgroundPage.viewState = backgroundPage.inFocusView;
   console.log('stopping break alarm and chaning to focus view', backgroundPage.viewState);
+
+  initFocusTimer();
 }
 
 
@@ -196,6 +211,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   } else if (message.type === backgroundPage.updatePopupViewSignal) {
     console.log("Changeview signal received", message );
     changeView(message.view)
+  } else if (message.type === backgroundPage.timesupSignal) {
+    console.log("Times up signal received", message );
+    if (message.nextViewState === backgroundPage.inFocusView){
+      initFocusTimer()
+    } else if (message.nextViewState === backgroundPage.inBreakView) {
+      initBreakTimer()
+    } else {
+      console.log("Times up signal initiated, but no view state matched", message.nextViewState);
+    }
   } else {
     console.log("Popup: Caught unmatched message", message)
   }
