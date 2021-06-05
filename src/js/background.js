@@ -6,6 +6,7 @@ var toFocusView = 'toFocusView'
 var exitingFocusView = 'exitingFocusView'
 
 
+console.log("evaluating background")
 // Initialized default timers
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.sync.set({
@@ -19,6 +20,16 @@ chrome.runtime.onInstalled.addListener(function() {
 });
 
 let exerciseURL = '';
+
+function setFocusTimeAlarm() {
+  chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
+  chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
+  badgeText = focusTimeRemaining + "m";
+  console.log(`bg is ${backgroundPage}`)
+  console.log(`bg value is ${backgroundPage.toBreakView}`)
+  backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
+};
+// function setBreakTimeAlarm();
 
 // Listening incoming messages from content scripts like options.js and popup.js
 chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
@@ -117,8 +128,82 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
   chrome.browserAction.setBadgeText({ text: "" });
 });
 
-//setInterval(function () {
-//  let text = Math.random(100).toString()
-//  console.log(`setting badge text to ${text} in background`)
-//  chrome.browserAction.setBadgeText({ text: text });
-//}, 1000);
+
+// timer meta
+// could be one of
+// running || paused || stopped 
+let timerState;
+let running = 'running'
+let paused = 'paused'
+let stopped = 'stopped'
+
+let startTime;
+let remainingMs = 0;
+//timer functions
+function getTimerTime() {
+  return currentTime
+};
+
+//function getCurrentSystemTime(){
+//  const now = new Date()  
+//  return now.getTime()
+//}
+function startTimer(timer_duration_ms) {
+  // startTime = getCurrentSystemTime();
+  console.log(`starting timer with duration ${timer_duration_ms}`)
+  remainingMs = timer_duration_ms
+  timerState = running;
+};
+function stopTimer() {
+  console.log("stopped timer")
+  timerState = stopped
+};
+//function pauseTimer() {
+//  timerState = paused
+//};
+//function resumeTimer() {
+//  timerState = running
+//};
+
+function displayRemainingTime(duration_ms) {
+  if (duration_ms === 0) {
+    return '0s'
+  }
+  let duration = duration_ms / 1000;
+  console.log(`pretty print remaining time ${duration} in seconds`)
+  let displayTime;
+  if (duration < 60) {
+    displayTime =  duration.toString() + "s"
+    console.log(`duration is less than 60, returing ${displayTime}`)
+    return displayTime
+  } else {
+    let minutes = Math.floor(duration / 60);
+    let seconds = duration % 60;
+    if (seconds == 0) {
+      displayTime = minutes.toString() + "m";
+      console.log(`duration is on 60, returing ${displayTime}`)
+      return displayTime
+    }
+    // badget supports max character 4. but we can sneak in a colon here
+    displayTime = minutes.toString() + ":" + seconds.toString();
+    console.log(`duration is over 60, returing ${displayTime}`)
+    return  displayTime
+  }
+}
+
+let interval_ms = 1000
+setInterval(function () {
+  console.log("counting down")
+  switch (timerState) {
+    case running:
+        remainingMs -= interval_ms
+        console.log("Timer is running state, counting down")
+        if (remainingMs <= 0) {
+          console.log("time is up")
+          timerState = stopped
+        }
+        break;
+  }
+  let remainingTime = displayRemainingTime(remainingMs);
+  chrome.browserAction.setBadgeText({ text: remainingTime.toString() });
+}, interval_ms);

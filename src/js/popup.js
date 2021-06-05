@@ -107,6 +107,14 @@ function countDownBreakTimer() {
   });
 }
 
+function startFocusTimer(event) {
+  console.log('starting focus alarm');
+  chrome.storage.sync.get(["focusTime"], function(result) {
+    let duration_ms = result.focusTime * 60 * 1000
+    backgroundPage.startTimer(duration_ms)
+  });
+  backgroundPage.changeNotificationStage(backgroundPage.toFocusView);
+}
 function setAlarm(event) {
   console.log('setting alarm')
   alarmName = event.target.name;
@@ -114,8 +122,6 @@ function setAlarm(event) {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
     chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
     badgeText = focusTimeRemaining + "m";
-    console.log(`bg is ${backgroundPage}`)
-    console.log(`bg value is ${backgroundPage.toBreakView}`)
     backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
   } else {
     chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
@@ -142,7 +148,7 @@ function clearAlarm() {
 }
 
 // Display timer in an interval
-timerId = setInterval(countDown, 1000);
+// timerId = setInterval(countDown, 1000);
 //An Alarm delay of less than the minimum 1 minute will fire
 // in approximately 1 minute incriments if released
 
@@ -153,7 +159,7 @@ function addEventListenerIfButtonExists(buttonId, event) {
     button.addEventListener("click", event)
   }
 }
-addEventListenerIfButtonExists("startFocusTimerButton", setAlarm)
+addEventListenerIfButtonExists("startFocusTimerButton", startFocusTimer)
 addEventListenerIfButtonExists("stopFocusTimerButton", clearAlarm)
 addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
 addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
