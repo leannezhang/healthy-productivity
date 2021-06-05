@@ -5,20 +5,35 @@ var exitingBreakView = 'exitingBreakView'
 var toFocusView = 'toFocusView'
 var exitingFocusView = 'exitingFocusView'
 var updatePopupTextSignal = 'updatePopupTextSignal';
+var updatePopupViewSignal = 'updatePopupViewSignal';
+
+// timer meta
+// could be one of
+// running || paused || stopped 
+var timerState = unInit;
+var running = 'running'
+var paused = 'paused'
+var stopped = 'stopped'
+var unInit = 'unInit'
+
+var unInitView = 'unInitView';
+var inFocusView = 'inFocusView';
+var inBreakView = 'inBreakView';
+var viewState = unInitView;
 
 
 console.log("evaluating background")
 // Initialized default timers
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({
-    view: "focusView",
-    breakTime: 5,
-    focusTime: 30,
-    // Can combine timerStarted and startTime into one variable
-    timerStarted: false,
-    startTime: 0
-  });
-});
+//chrome.runtime.onInstalled.addListener(function() {
+//  chrome.storage.sync.set({
+//    view: "focusView",
+//    breakTime: 5,
+//    focusTime: 30,
+//    // Can combine timerStarted and startTime into one variable
+//    timerStarted: false,
+//    startTime: 0
+//  });
+//});
 
 let exerciseURL = '';
 
@@ -143,24 +158,13 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
 });
 
 
-// private
-// timer meta
-// could be one of
-// running || paused || stopped 
-var timerState;
-var running = 'running'
-var paused = 'paused'
-var stopped = 'stopped'
-var unInit = 'unInit'
 
 let startTime;
-let remainingMs = 0;
+// this should match the default in option
+// as there are no ways to sync the default value from option.html
+let remainingMs = 30 * 60 * 1000;
 let initialDurationMs = 0;
 
-let viewState;
-let inFocusView = 'inFocusView';
-let inBreakView = 'inBreakView';
-let noView = 'noView';
 
 
 //timer functions
@@ -187,17 +191,10 @@ function startTimer(timer_duration_ms) {
 };
 
 function resetTimer() {
-  console.log("stopped timer")
   timerState = stopped;
   remainingMs = initialDurationMs;
+  console.log("stopped timer, resetting to ", remainingMs)
 };
-
-//function pauseTimer() {
-//  timerState = paused
-//};
-//function resumeTimer() {
-//  timerState = running
-//};
 
 function displayRemainingTime(duration_ms, badgeMode=false) {
   if (duration_ms === 0) {
@@ -231,7 +228,7 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
 
 let interval_ms = 1000
 setInterval(function () {
-  console.log("counting down")
+  console.log("counting down in view", viewState)
   switch (timerState) {
     case running:
         remainingMs -= interval_ms
@@ -254,6 +251,14 @@ setInterval(function () {
       value: displayRemainingTime(remainingMs).toString()
     }, function (response)  {
       console.log("popup update signal sent");
+    }
+  )
+  chrome.runtime.sendMessage(
+    {
+      type: updatePopupViewSignal,
+      view: viewState
+    }, function (response)  {
+      console.log("popup view update signal sent");
     }
   )
 }, interval_ms);
