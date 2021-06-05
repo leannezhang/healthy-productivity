@@ -163,3 +163,12 @@ addEventListenerIfButtonExists("startFocusTimerButton", startFocusTimer)
 addEventListenerIfButtonExists("stopFocusTimerButton", clearAlarm)
 addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
 addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
+
+function initTimer(event) {
+  console.log('starting focus alarm');
+  chrome.storage.sync.get(["focusTime"], function(result) {
+    let duration_ms = result.focusTime * 60 * 1000
+    backgroundPage.initTimer(duration_ms)
+  });
+}
+initTimer()

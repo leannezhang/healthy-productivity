@@ -148,6 +148,9 @@ function getTimerTime() {
 //  const now = new Date()  
 //  return now.getTime()
 //}
+function initTimer(timer_duration_ms) {
+  remainingMs = timer_duration_ms;
+}
 function startTimer(timer_duration_ms) {
   // startTime = getCurrentSystemTime();
   console.log(`starting timer with duration ${timer_duration_ms}`)
