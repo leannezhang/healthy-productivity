@@ -115,6 +115,12 @@ function startFocusTimer(event) {
   });
   backgroundPage.changeNotificationStage(backgroundPage.toFocusView);
 }
+
+function stopFocusTimer(event) {
+  console.log('stopping focus alarm');
+  backgroundPage.resetTimer()
+}
+
 function setAlarm(event) {
   console.log('setting alarm')
   alarmName = event.target.name;
@@ -160,7 +166,7 @@ function addEventListenerIfButtonExists(buttonId, event) {
   }
 }
 addEventListenerIfButtonExists("startFocusTimerButton", startFocusTimer)
-addEventListenerIfButtonExists("stopFocusTimerButton", clearAlarm)
+addEventListenerIfButtonExists("stopFocusTimerButton", stopFocusTimer)
 addEventListenerIfButtonExists("startBreakTimerButton", setAlarm)
 addEventListenerIfButtonExists("stopBreakTimerButton", clearAlarm)
 

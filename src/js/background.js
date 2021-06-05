@@ -139,6 +139,7 @@ let stopped = 'stopped'
 
 let startTime;
 let remainingMs = 0;
+let initialDuration = 0;
 //timer functions
 function getTimerTime() {
   return currentTime
@@ -148,19 +149,26 @@ function getTimerTime() {
 //  const now = new Date()  
 //  return now.getTime()
 //}
+
 function initTimer(timer_duration_ms) {
+  initialDuration = timer_duration_ms;
   remainingMs = timer_duration_ms;
+  timerState = stopped;
 }
+
 function startTimer(timer_duration_ms) {
   // startTime = getCurrentSystemTime();
   console.log(`starting timer with duration ${timer_duration_ms}`)
   remainingMs = timer_duration_ms
   timerState = running;
 };
-function stopTimer() {
+
+function resetTimer() {
   console.log("stopped timer")
-  timerState = stopped
+  timerState = stopped;
+  remainingMs = initialDuration;
 };
+
 //function pauseTimer() {
 //  timerState = paused
 //};
@@ -205,6 +213,9 @@ setInterval(function () {
           console.log("time is up")
           timerState = stopped
         }
+        break;
+    case stopped:
+        console.log("Timer is stopped");
         break;
   }
   let remainingTime = displayRemainingTime(remainingMs);
