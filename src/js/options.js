@@ -13,6 +13,9 @@ function sendRecommendedExerciseToBackgroundJS(userInputs) {
   }, function(response) {
     console.log("exercise url is sent", response)
   })
+  chrome.storage.sync.set({ exerciseURL: exercise.url }, function () {
+    console.log("exerciseURL set in content script storage " + exerciseURL);
+  });
 }
 
 function prepopulatingUIDataFromStorage() {
