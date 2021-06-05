@@ -82,9 +82,9 @@ function countDownFocusTimer() {
     let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
     focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
     $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
-    chrome.browserAction.setBadgeText({
-      text: focusTimeRemaining.toString()
-    });
+    // chrome.browserAction.setBadgeText({
+    //   text: focusTimeRemaining.toString()
+    // });
   });
 }
 
@@ -95,9 +95,9 @@ function countDownBreakTimer() {
     let timeDiffInMillSecs = startTime + breakTimeDuration * 60000 - Date.now();
     breakTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
     $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
-    chrome.browserAction.setBadgeText({
-      text: breakTimeRemaining.toString()
-    });
+    // chrome.browserAction.setBadgeText({
+    //   text: breakTimeRemaining.toString()
+    // });
   });
 }
 
@@ -132,7 +132,7 @@ function setAlarm(event) {
       }
     });
   }
-  chrome.browserAction.setBadgeText({ text: badgeText });
+  // chrome.browserAction.setBadgeText({ text: badgeText });
   // window.close();
 }
 

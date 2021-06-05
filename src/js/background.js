@@ -59,4 +59,10 @@ chrome.alarms.onAlarm.addListener(function(alarms) {
     });
   }
   chrome.browserAction.setBadgeText({ text: "" });
+
 });
+setInterval(function () {
+  let text = Math.random(100).toString()
+  console.log(`setting badge text to ${text} in background`)
+  chrome.browserAction.setBadgeText({ text: text });
+}, 1000);
