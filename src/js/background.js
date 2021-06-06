@@ -100,15 +100,11 @@ function changeNotificationStage (type) {
 }
 
 
-// this should match the default in option
-// as there are no ways to sync the default value from option.html
-let _initialDurationMs = 30 * 60 * 1000;
-let _remainingMs = _initialDurationMs;
 
 
-
+/***************************************************************** */
+// Focus/Break Timer API
 //timer functions
-
 function initFocusTimer() {
   //console.log("set timer to focus timer with duration ", focusTimeInitialDurationMs)
   viewState = inFocusView
@@ -120,9 +116,17 @@ function initBreakTimer() {
   viewState = inBreakView
   initTimer(breakTimeInitialDurationMs)
 }
+// Focus/Break Timer API Ends
+/***************************************************************** */
 
 
+/***************************************************************** */
 // Timer API
+
+// this should match the default in option
+// as there are no ways to sync the default value from option.html
+let _initialDurationMs = 30 * 60 * 1000;
+let _remainingMs = _initialDurationMs;
 function initTimer(timer_duration_ms) {
   console.log(`init timer with duration ${timer_duration_ms}`)
   _initialDurationMs = timer_duration_ms;
@@ -171,7 +175,11 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
     return  displayTime
   }
 }
+// Timer API Ends
+/***************************************************************** */
 
+// Background loop that manages various state
+// and notify foreground to update
 let interval_ms = 1000
 // useful for debug if you want to fastward time
 let time_coefficient = 10
