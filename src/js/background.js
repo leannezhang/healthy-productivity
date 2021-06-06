@@ -165,7 +165,7 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
 // and notify foreground to update
 let interval_ms = 1000
 // useful for debug if you want to fastward time
-let time_coefficient = 10
+let time_coefficient = 1
 setInterval(function () {
   console.log("counting down in view", viewState)
   switch (timerState) {
