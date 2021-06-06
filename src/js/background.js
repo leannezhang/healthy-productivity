@@ -10,12 +10,14 @@ var timesupSignal = 'timesupSignal';
 
 // timer meta
 // could be one of
-// running || paused || stopped 
+// running || stopped 
 var timerState = unInit;
 var running = 'running'
-var paused = 'paused'
 var stopped = 'stopped'
 var unInit = 'unInit'
+
+var focusTimeInitialDurationMs = -1;
+var breakTimeInitialDurationMs = -1;
 
 var unInitView = 'unInitView';
 var inFocusView = 'inFocusView';
@@ -38,36 +40,27 @@ console.log("evaluating background")
 
 let exerciseURL = '';
 
-//function setFocusTimeAlarm() {
-//  chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-//  chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
-//  badgeText = focusTimeRemaining + "m";
-//  console.log(`bg is ${backgroundPage}`)
-//  console.log(`bg value is ${backgroundPage.toBreakView}`)
-//  backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
-//};
-// function setBreakTimeAlarm();
 
 // Listening incoming messages from content scripts like options.js and popup.js
 chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   if (message.type === "notification") {
+    // from popup.js
     chrome.notifications.create(message.options);
   } else if (message.exceriseURL) {
+    // from popup.js
     exerciseURL= message.exceriseURL;
     console.log("exceriseURL is",exerciseURL)
-  } else if (message.timerInitialDurationMin) {
-    initialDurationMs = message.timerInitialDurationMin;
-    console.log("timer init duration received")
-    if (timerState != running){
-      console.log("Setting badge")
-      remainingMs = initialDurationMs * 60 * 1000 ;
-      chrome.browserAction.setBadgeText({text: displayRemainingTime(remainingMs)})
-    } else {
-      console.log("Timer is running, not updating badge text")
-    }
+  } else if (message.focusTimeInitialDurationMin) {
+    // from option.js
+    // setting _initDurationMs?
+    focusTimeInitialDurationMs = message.focusTimeInitialDurationMin * 60 * 1000;
+    console.log("focus timer init duration received")
+  } else if (message.breakTimeInitialDurationMin) {
+    // from option.js
+    breakTimeInitialDurationMs = message.breakTimeInitialDurationMin * 60 * 1000;
+    console.log("break timer init duration received")
   } else {
-    console.log("Caught unmatched message", message)
-
+    console.error("Caught unmatched message", message)
   }
 });
 
@@ -102,98 +95,51 @@ function changeNotificationStage (type) {
       type: "basic"
     });
   } else {
-    console.log(`Caught unexpected type ${type}`)
+    console.error(`Caught unexpected type ${type}`)
   }
 }
 
-//function setFocustimeAlarm () {
-//    chrome.storage.sync.set(
-//      { view: "breakView", timerStarted: false, startTime: 0 },
-//      function() {
-//        console.log("The view is breakView");
-//      }
-//    );
-//    toggleNotificationText("toBreakView")
-//}
-//
-//function setBreaktimeAlarm() {
-//    chrome.storage.sync.set(
-//      { view: "focusView", timerStarted: false, startTime: 0 },
-//      function() {
-//        console.log("The view id focusView");
-//      }
-//    );
-//    //chrome.notifications.create({
-//    //  title: "Break is over",
-//    //  message: "Break is over. Time to focus now! Click on the timer to start.",
-//    //  iconUrl: "src/images/get_started128.png",
-//    //  type: "basic"
-//    //});
-//    changeNotificationStage(exitingBreakView)
-//}
 
-//chrome.alarms.onAlarm.addListener(function(alarms) {
-//  // When the focus alarm times up
-//  if (alarms.name === "focusAlarm") {
-//    // seems like when the windows is not closed, the notification bar would not appear
-//    chrome.storage.sync.set(
-//      { view: "breakView", timerStarted: false, startTime: 0 },
-//      function() {
-//        console.log("The view is breakView");
-//      }
-//    );
-//    changeNotificationStage(toBreakView)
-//    // Open the recommneded exercise in the new window
-//    window.open(exerciseURL)
-//  // When the break alarm times up
-//  } else {
-//    chrome.storage.sync.set(
-//      { view: "focusView", timerStarted: false, startTime: 0 },
-//      function() {
-//        console.log("The view id focusView");
-//      }
-//    );
-//    changeNotificationStage(exitingBreakView)
-//  }
-//  chrome.browserAction.setBadgeText({ text: "" });
-//});
-
-
-let startTime;
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
-let remainingMs = 30 * 60 * 1000;
-let initialDurationMs = 0;
+let _initialDurationMs = 30 * 60 * 1000;
+let _remainingMs = _initialDurationMs;
 
 
 
 //timer functions
-function getTimerTime() {
-  return currentTime
-};
 
-//function getCurrentSystemTime(){
-//  const now = new Date()  
-//  return now.getTime()
-//}
-
-function initTimer(timer_duration_ms) {
-  initialDurationMs = timer_duration_ms;
-  remainingMs = timer_duration_ms;
-  timerState = stopped;
+function initFocusTimer() {
+  //console.log("set timer to focus timer with duration ", focusTimeInitialDurationMs)
+  viewState = inFocusView
+  initTimer(focusTimeInitialDurationMs)
 }
 
-function startTimer(timer_duration_ms) {
-  // startTime = getCurrentSystemTime();
-  console.log(`starting timer with duration ${timer_duration_ms}`)
-  remainingMs = timer_duration_ms
+function initBreakTimer() {
+  //console.log("set timer to break timer with duration ", breakTimeInitailDurationMs)
+  viewState = inBreakView
+  initTimer(breakTimeInitialDurationMs)
+}
+
+
+// Timer API
+function initTimer(timer_duration_ms) {
+  console.log(`init timer with duration ${timer_duration_ms}`)
+  _initialDurationMs = timer_duration_ms;
+  resetTimer()
+}
+
+function startTimer() {
+  console.log(`starting timer with duration ${_initialDurationMs}`)
+  _remainingMs = _initialDurationMs
   timerState = running;
 };
 
+// duplicate?
 function resetTimer() {
   timerState = stopped;
-  remainingMs = initialDurationMs;
-  console.log("stopped timer, resetting to ", remainingMs)
+  _remainingMs = _initialDurationMs;
+  console.log("stopped timer, resetting to ", _remainingMs, viewState)
 };
 
 function displayRemainingTime(duration_ms, badgeMode=false) {
@@ -201,27 +147,27 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
     return '0s'
   }
   let duration = duration_ms / 1000;
-  console.log(`pretty print remaining time ${duration} in seconds`)
+  // console.log(`pretty print remaining time ${duration} in seconds`)
   let displayTime;
   if (duration < 60) {
     displayTime =  duration.toString() + "s"
-    console.log(`duration is less than 60, returing ${displayTime}`)
+    //console.log(`duration is less than 60, returing ${displayTime}`)
     return displayTime
   } else {
     let minutes = Math.floor(duration / 60);
     let seconds = duration % 60;
     if (seconds == 0) {
       displayTime = minutes.toString() + "m";
-      console.log(`duration is on 60, returing ${displayTime}`)
+      // console.log(`duration is on 60, returing ${displayTime}`)
       return displayTime
     }
-    // badget supports max character 4. but we can sneak in a colon here
+    // badge supports max character 4. but we can sneak in a colon here
     if (badgeMode) {
       displayTime = minutes.toString() + ":" + seconds.toString();
       return displayTime
     }
     displayTime = minutes.toString() + "min(s) " + seconds.toString() + "s";
-    console.log(`duration is over 60, returing ${displayTime}`)
+    // console.log(`duration is over 60, returing ${displayTime}`)
     return  displayTime
   }
 }
@@ -233,40 +179,49 @@ setInterval(function () {
   console.log("counting down in view", viewState)
   switch (timerState) {
     case running:
-        remainingMs -= interval_ms * time_coefficient
-        console.log("Timer is running state, counting down")
-        if (remainingMs <= 0) {
-          timerState = stopped
-          if (viewState === inFocusView) {
-            viewState = inBreakView
+      _remainingMs -= interval_ms * time_coefficient
+      console.log("Timer is running state, counting down")
+      if (_remainingMs <= 0) {
+        timerState = stopped
+        if (viewState === inFocusView) {
+          viewState = inBreakView
 
-            //window.open(exerciseURL)
-          } else {
-            viewState = inFocusView
-          }
-          chrome.runtime.sendMessage(
-            { type: timesupSignal,
-              nextViewState: viewState,
-              value: displayRemainingTime(remainingMs).toString()
-            }, function (response)  {
-              console.log("popup update signal sent");
-            }
-          )
-          console.log("time is up, changing to view ", viewState)
+          //window.open(exerciseURL)
+        } else {
+          viewState = inFocusView
         }
-        break;
+        chrome.runtime.sendMessage(
+          { type: timesupSignal,
+            nextViewState: viewState,
+            value: displayRemainingTime(_remainingMs).toString()
+          }, function (response)  {
+            console.log("popup update signal sent");
+          }
+        )
+        console.log("time is up, changing to view ", viewState)
+      }
+      break;
     case stopped:
-        console.log("Timer is stopped");
-        break;
+      console.log("Timer has stopped");
+      console.log("Setting badge")
+      _remainingMs = _initialDurationMs;
+      chrome.browserAction.setBadgeText({text: displayRemainingTime(_remainingMs)})
+      break;
+    case unInit:
+      console.log("Timer is unInit");
+      break;
+    default:
+      console.error("Unknown timerState ", timerState);
+      break
   }
   chrome.browserAction.setBadgeText({
-     text: displayRemainingTime(remainingMs, true).toString()
+     text: displayRemainingTime(_remainingMs, true).toString()
   });
   // update popup timer message in foreground
   chrome.runtime.sendMessage(
     { type: updatePopupTextSignal,
       viewState: viewState,
-      value: displayRemainingTime(remainingMs).toString()
+      value: displayRemainingTime(_remainingMs).toString()
     }, function (response)  {
       console.log("popup update signal sent");
     }

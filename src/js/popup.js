@@ -22,20 +22,16 @@ let hideView;
 
 let timerId;
 
-let backgroundPage
-chrome.runtime.getBackgroundPage(function (bg) {
-  console.log(`Got bg ${bg}`);
-  backgroundPage = bg;
+let bg
+chrome.runtime.getBackgroundPage(function (backgroundPage) {
+  console.log(`Got bg ${backgroundPage}`);
+  bg = backgroundPage;
   init()
 })
 
-//chrome.storage.sync.get(["timerStarted"], function(result) {
-//  timerStarted = result.timerStarted;
-//});
-//
-//chrome.storage.sync.get(["startTime"], function(result) {
-//  startTime = result.startTime;
-//});
+//set default as soon as possible so that user don't notice the view changes
+changePopUpViewToFocusTime();
+
 function changePopUpViewToFocusTime() {
     hideView = document.getElementById("breakTimeDiv");
     hideView.classList.add("hide");
@@ -50,173 +46,121 @@ function changePopUpViewToBreakTime() {
     hideView.classList.add("hide");
 }
 
-//default
-changePopUpViewToFocusTime();
 
 function changeView(view) {
   console.log("Changing view to " ,view)
-  if (view === backgroundPage.inFocusView) {
+  if (view === bg.inFocusView) {
     changePopUpViewToFocusTime()
   } else {
     changePopUpViewToBreakTime()
   }
 }
 
-function initTimer() {
-  console.log('starting focus alarm');
-  if (backgroundPage.timerState === backgroundPage.unInit ) {
-    initFocusTimer();
+function initTimers() {
+  // propagate timer durations to background
+  chrome.storage.sync.get(["focusTime"], function(result) {
+    let duration_ms = result.focusTime * 60 * 1000
+    bg.focusTimeInitialDurationMs = duration_ms
+  });
+  chrome.storage.sync.get(["breakTime"], function(result) {
+    let duration_ms = result.breakTime * 60 * 1000
+    bg.breakTimeInitialDurationMs = duration_ms
+  });
+
+  // init timer depending on viewState
+  if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInit) ) {
+    console.log('setting focus alarm');
+    bg.initFocusTimer();
+  }
+  if ((bg.viewState === bg.inBreakView) && (bg.timerState === bg.unInit) ) {
+    console.log('setting break alarm');
+    bg.initBreakTimer();
   }
 };
 
 function initView() {
   console.log('setting view to focus');
-  if (backgroundPage.viewState === backgroundPage.unInitView) {
-    backgroundPage.viewState = backgroundPage.inFocusView
+  if (bg.viewState === bg.unInitView) {
+    bg.viewState = bg.inFocusView
   }
 };
 
+// init everything in foreground
+// and update default values in background
 function init() {
   console.log('running init')
   initView();
   console.log('finished init view')
-  initTimer();
+  initTimers();
   console.log('finished init timer')
 }
-// init()
-
-//resetFocusTimerView();
-//resetBreakTimeView();
-//
-//function resetFocusTimerView() {
-//  chrome.storage.sync.get(["focusTime"], function(result) {
-//    focusTimeDuration = parseInt(result.focusTime);
-//    focusTimeRemaining = focusTimeDuration;
-//    // $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
-//  });
-//}
-//
-//function resetBreakTimeView() {
-//  chrome.storage.sync.get(["breakTime"], function(result) {
-//    breakTimeDuration = parseInt(result.breakTime);
-//    breakTimeRemaining = breakTimeDuration;
-//    // $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
-//  });
-//}
-
-//function countDown() {
-//  chrome.storage.sync.get(["timerStarted"], function(result) {
-//    timerStarted = result.timerStarted;
-//    if (timerStarted && view === "focusView") {
-//      countDownFocusTimer();
-//    } else if (timerStarted && view === "breakView") {
-//      countDownBreakTimer();
-//    }
-//  });
-//}
-//
-//function countDownFocusTimer() {
-//  chrome.storage.sync.get(["startTime"], function(result) {
-//    startTime = result.startTime;
-//    // 60,000 is to convert mins to millsecs
-//    let timeDiffInMillSecs = startTime + focusTimeDuration * 60000 - Date.now();
-//    focusTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-//    // $focusTimeRemainingDiv.textContent = focusTimeRemaining + " min(s)";
-//    chrome.browserAction.setBadgeText({
-//      text: focusTimeRemaining.toString()
-//    });
-//  });
-//}
-//
-//function countDownBreakTimer() {
-//  chrome.storage.sync.get(["startTime"], function(result) {
-//    startTime = result.startTime;
-//    // 60,000 is to convert mins to millsecs
-//    let timeDiffInMillSecs = startTime + breakTimeDuration * 60000 - Date.now();
-//    breakTimeRemaining = Math.ceil(timeDiffInMillSecs / 60000);
-//    // $breakTimeRemainingDiv.textContent = breakTimeRemaining + " min(s)";
-//    chrome.browserAction.setBadgeText({
-//      text: breakTimeRemaining.toString()
-//    });
-//  });
-//}
-
-
 
 // new 
 function startFocusTimer(event) {
   console.log('starting focus alarm');
-  chrome.storage.sync.get(["focusTime"], function(result) {
-    let duration_ms = result.focusTime * 60 * 1000
-    backgroundPage.startTimer(duration_ms)
-  });
-  backgroundPage.changeNotificationStage(backgroundPage.toFocusView);
-  backgroundPage.timerState = backgroundPage.inFocusView;
+  //chrome.storage.sync.get(["focusTime"], function(result) {
+  //  let duration_ms = result.focusTime * 60 * 1000
+  //  bg.startTimer(duration_ms)
+  //});
+  initTimers();
+  bg.startTimer();
+  bg.changeNotificationStage(bg.toFocusView);
+  bg.viewState = bg.inFocusView;
 }
 
 // new
 function stopFocusTimer(event) {
-  backgroundPage.resetTimer()
-  backgroundPage.viewState = backgroundPage.inBreakView;
-  console.log('stopping focus alarm and chaning to break view', backgroundPage.viewState);
-
-  initBreakTimer();
+  // bg.resetTimer()
+  bg.initBreakTimer();
+  console.log('stopping focus alarm and changing to break view', bg.viewState);
+  bg.viewState = bg.inBreakView;
 }
 
-function initBreakTimer() {
-  chrome.storage.sync.get(["breakTime"], function(result) {
-    let duration_ms = result.breakTime * 60 * 1000
-    backgroundPage.initTimer(duration_ms)
-  });
-}
 
 // new
 function startBreakTimer(event) {
   console.log('starting break alarm');
-  chrome.storage.sync.get(["breakTime"], function(result) {
-    let duration_ms = result.breakTime * 60 * 1000
-    backgroundPage.startTimer(duration_ms)
-  });
-  backgroundPage.changeNotificationStage(backgroundPage.toBreakView);
-  backgroundPage.timerState = backgroundPage.inBreakView;
+  //chrome.storage.sync.get(["breakTime"], function(result) {
+  //  let duration_ms = result.breakTime * 60 * 1000
+  //  bg.startTimer(duration_ms)
+  //});
+  initTimers();
+  bg.startTimer();
+  bg.changeNotificationStage(bg.toBreakView);
+  bg.viewState = bg.inBreakView;
 }
 
-function initFocusTimer() {
-  chrome.storage.sync.get(["focusTime"], function(result) {
-    let duration_ms = result.focusTime * 60 * 1000
-    backgroundPage.initTimer(duration_ms)
-  });
-}
 
 // new
-function stopBreakTimer(event) {
-  console.log('stopping break alarm');
-  backgroundPage.resetTimer()
-  backgroundPage.viewState = backgroundPage.inFocusView;
-  console.log('stopping break alarm and chaning to focus view', backgroundPage.viewState);
-
-  initFocusTimer();
+function stopBreakTimer(event) { console.log('stopping break alarm');
+  // bg.resetTimer()
+  bg.initFocusTimer();
+  console.log('stopping break alarm and changing to focus view', bg.viewState);
+  bg.viewState = bg.inFocusView;
 }
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
-  if (message.type === backgroundPage.updatePopupTextSignal) {
-    if (message.viewState === backgroundPage.inFocusView){
+  if (message.type === bg.updatePopupTextSignal) {
+    // from background
+    if (message.viewState === bg.inFocusView){
       $focusTimeRemainingDiv.textContent = message.value;
-    } else if (message.viewState === backgroundPage.inBreakView) {
+    } else if (message.viewState === bg.inBreakView) {
       $breakTimeRemainingDiv.textContent = message.value;
     } else {
       console.log("Popup update initiated, but no view state matched", message.viewState);
     }
-  } else if (message.type === backgroundPage.updatePopupViewSignal) {
+  } else if (message.type === bg.updatePopupViewSignal) {
+    // from background
     console.log("Changeview signal received", message );
     changeView(message.view)
-  } else if (message.type === backgroundPage.timesupSignal) {
+  } else if (message.type === bg.timesupSignal) {
+    // from background
     console.log("Times up signal received", message );
-    if (message.nextViewState === backgroundPage.inFocusView){
-      initFocusTimer()
-    } else if (message.nextViewState === backgroundPage.inBreakView) {
-      initBreakTimer()
+    if (message.nextViewState === bg.inFocusView){
+      bg.initFocusTimer()
+    } else if (message.nextViewState === bg.inBreakView) {
+      bg.initBreakTimer()
     } else {
       console.log("Times up signal initiated, but no view state matched", message.nextViewState);
     }
@@ -225,42 +169,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   }
 });
 
-//function setAlarm(event) {
-//  console.log('setting alarm')
-//  alarmName = event.target.name;
-//  if (alarmName === "focusAlarm") {
-//    chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-//    chrome.alarms.create(alarmName, { delayInMinutes: focusTimeRemaining });
-//    badgeText = focusTimeRemaining + "m";
-//    backgroundPage.changeNotificationStage(backgroundPage.toFocusView)
-//  } else {
-//    chrome.storage.sync.set({ timerStarted: true, startTime: Date.now() });
-//    chrome.alarms.create(alarmName, { delayInMinutes: breakTimeRemaining });
-//    badgeText = breakTimeRemaining + "m";
-//    console.log(`bg is ${backgroundPage}`)
-//    console.log(`bg value is ${backgroundPage.toBreakView}`)
-//    backgroundPage.changeNotificationStage(backgroundPage.toBreakView)
-//  }
-//  chrome.browserAction.setBadgeText({ text: badgeText });
-//  // window.close();
-//}
-
-//function clearAlarm() {
-//  chrome.alarms.clearAll();
-//  chrome.storage.sync.set({ timerStarted: false });
-//  chrome.browserAction.setBadgeText({ text: "" });
-//  if (view === "focusView") {
-//    resetFocusTimerView();
-//  } else {
-//    resetBreakTimeView();
-//  }
-//  clearInterval(timerId);
-//}
-
-// Display timer in an interval
-// timerId = setInterval(countDown, 1000);
-//An Alarm delay of less than the minimum 1 minute will fire
-// in approximately 1 minute incriments if released
 
 function addEventListenerIfButtonExists(buttonId, event) {
   var button = document
@@ -273,6 +181,3 @@ addEventListenerIfButtonExists("startFocusTimerButton", startFocusTimer)
 addEventListenerIfButtonExists("stopFocusTimerButton", stopFocusTimer)
 addEventListenerIfButtonExists("startBreakTimerButton", startBreakTimer)
 addEventListenerIfButtonExists("stopBreakTimerButton", stopBreakTimer)
-
-
-// init()

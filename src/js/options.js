@@ -137,19 +137,24 @@ function saveTimeOptions() {
   chrome.storage.sync.set({ focusTime: focusTime }, function () {
     console.log("focusTime is " + focusTime);
   });
-  // also update default value in background 
-  // TODO we should unify the source of focusTime.
-  // content script does need to store this in localstorage
-  chrome.runtime.sendMessage(
-    { timerInitialDurationMin: focusTime}, function (response)  {
-      console.log("focus Time sent to background");
-    }
-  )
-
   const breakTime = document.getElementById("break-time").value;
   chrome.storage.sync.set({ breakTime: breakTime }, function () {
     console.log("breakTime is " + breakTime);
   });
+
+  // also update default value in background 
+  // TODO we should unify the source of focusTime.
+  // content script does need to store this in local storage
+  chrome.runtime.sendMessage(
+    { focusTimeInitialDurationMin: focusTime}, function (response)  {
+      console.log("focus Time duration sent to background");
+    }
+  )
+  chrome.runtime.sendMessage(
+    { breakTimeInitialDurationMin: breakTime}, function (response)  {
+      console.log("break Time duration sent to background");
+    }
+  )
 }
 
 prepopulatingUIDataFromStorage();
