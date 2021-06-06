@@ -178,6 +178,9 @@ setInterval(function () {
           viewState = inBreakView
 
           window.open(exerciseURL)
+          // TODO
+          // we should start the break time automatcially
+          // after we open the exercise link
         } else {
           viewState = inFocusView
         }
