@@ -1,5 +1,5 @@
 "use strict";
-// public
+// Public constants
 var toBreakView = 'toBreakView'
 var exitingBreakView = 'exitingBreakView'
 var toFocusView = 'toFocusView'
@@ -7,37 +7,6 @@ var exitingFocusView = 'exitingFocusView'
 var updatePopupTextSignal = 'updatePopupTextSignal';
 var updatePopupViewSignal = 'updatePopupViewSignal';
 var timesupSignal = 'timesupSignal';
-
-// timer meta
-// could be one of
-// running || stopped 
-var timerState = unInit;
-var running = 'running'
-var stopped = 'stopped'
-var unInit = 'unInit'
-
-var focusTimeInitialDurationMs = -1;
-var breakTimeInitialDurationMs = -1;
-
-var unInitView = 'unInitView';
-var inFocusView = 'inFocusView';
-var inBreakView = 'inBreakView';
-var viewState = unInitView;
-
-
-console.log("evaluating background")
-// Initialized default timers
-//chrome.runtime.onInstalled.addListener(function() {
-//  chrome.storage.sync.set({
-//    view: "focusView",
-//    breakTime: 5,
-//    focusTime: 30,
-//    // Can combine timerStarted and startTime into one variable
-//    timerStarted: false,
-//    startTime: 0
-//  });
-//});
-
 let exerciseURL = '';
 
 
@@ -52,13 +21,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
     console.log("exceriseURL is",exerciseURL)
   } else if (message.focusTimeInitialDurationMin) {
     // from option.js
-    // setting _initDurationMs?
     focusTimeInitialDurationMs = message.focusTimeInitialDurationMin * 60 * 1000;
     console.log("focus timer init duration received")
+    // if user changes duration in option, we should reflect 
+    // that change and reset timer immediately
+    initFocusTimer()
   } else if (message.breakTimeInitialDurationMin) {
     // from option.js
     breakTimeInitialDurationMs = message.breakTimeInitialDurationMin * 60 * 1000;
     console.log("break timer init duration received")
+    // if user changes duration in option, we should reflect 
+    // that change and reset timer immediately
+    initFocusTimer()
   } else {
     console.error("Caught unmatched message", message)
   }
@@ -100,8 +74,6 @@ function changeNotificationStage (type) {
 }
 
 
-
-
 /***************************************************************** */
 // Focus/Break Timer API
 //timer functions
@@ -122,6 +94,21 @@ function initBreakTimer() {
 
 /***************************************************************** */
 // Timer API
+
+// could be one of
+// running || stopped 
+var timerState = unInit;
+var running = 'running'
+var stopped = 'stopped'
+var unInit = 'unInit'
+
+var focusTimeInitialDurationMs = -1;
+var breakTimeInitialDurationMs = -1;
+
+var unInitView = 'unInitView';
+var inFocusView = 'inFocusView';
+var inBreakView = 'inBreakView';
+var viewState = unInitView;
 
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
@@ -151,18 +138,15 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
     return '0s'
   }
   let duration = duration_ms / 1000;
-  // console.log(`pretty print remaining time ${duration} in seconds`)
   let displayTime;
   if (duration < 60) {
     displayTime =  duration.toString() + "s"
-    //console.log(`duration is less than 60, returing ${displayTime}`)
     return displayTime
   } else {
     let minutes = Math.floor(duration / 60);
     let seconds = duration % 60;
     if (seconds == 0) {
       displayTime = minutes.toString() + "m";
-      // console.log(`duration is on 60, returing ${displayTime}`)
       return displayTime
     }
     // badge supports max character 4. but we can sneak in a colon here
@@ -171,7 +155,6 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
       return displayTime
     }
     displayTime = minutes.toString() + "min(s) " + seconds.toString() + "s";
-    // console.log(`duration is over 60, returing ${displayTime}`)
     return  displayTime
   }
 }
@@ -194,7 +177,7 @@ setInterval(function () {
         if (viewState === inFocusView) {
           viewState = inBreakView
 
-          //window.open(exerciseURL)
+          window.open(exerciseURL)
         } else {
           viewState = inFocusView
         }

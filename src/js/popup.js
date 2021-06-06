@@ -1,26 +1,10 @@
 "use strict";
-
-//let alarmName = "focusAlarm";
-let badgeText;
-let timerStarted;
-let startTime;
-
-let focusTimeRemaining;
-let focusTimeDuration;
 let $focusTimeRemainingDiv = document.getElementById("focusTimeRemaining");
-
-let breakTimeRemaining;
-let breakTimeDuration;
 let $breakTimeRemainingDiv = document.getElementById("breakTimeRemaining");
-
-let activityCategory;
-let activityLst;
 
 //let view;
 let showView;
 let hideView;
-
-let timerId;
 
 let bg
 chrome.runtime.getBackgroundPage(function (backgroundPage) {
@@ -29,7 +13,9 @@ chrome.runtime.getBackgroundPage(function (backgroundPage) {
   init()
 })
 
-//set default as soon as possible so that user don't notice the view changes
+/***************************************************************** */
+// functions to update Popup views
+// set default as soon as possible so that user don't notice the view changes
 changePopUpViewToFocusTime();
 
 function changePopUpViewToFocusTime() {
@@ -46,7 +32,6 @@ function changePopUpViewToBreakTime() {
     hideView.classList.add("hide");
 }
 
-
 function changeView(view) {
   console.log("Changing view to " ,view)
   if (view === bg.inFocusView) {
@@ -55,7 +40,11 @@ function changeView(view) {
     changePopUpViewToBreakTime()
   }
 }
+// functions to update Popup views ends
+/***************************************************************** */
 
+/***************************************************************** */
+// functions for managing timers in background
 function initTimers() {
   // propagate timer durations to background
   chrome.storage.sync.get(["focusTime"], function(result) {
@@ -95,51 +84,38 @@ function init() {
   console.log('finished init timer')
 }
 
-// new 
 function startFocusTimer(event) {
   console.log('starting focus alarm');
-  //chrome.storage.sync.get(["focusTime"], function(result) {
-  //  let duration_ms = result.focusTime * 60 * 1000
-  //  bg.startTimer(duration_ms)
-  //});
   initTimers();
   bg.startTimer();
   bg.changeNotificationStage(bg.toFocusView);
   bg.viewState = bg.inFocusView;
 }
 
-// new
 function stopFocusTimer(event) {
-  // bg.resetTimer()
   bg.initBreakTimer();
   console.log('stopping focus alarm and changing to break view', bg.viewState);
   bg.viewState = bg.inBreakView;
 }
 
-
-// new
 function startBreakTimer(event) {
   console.log('starting break alarm');
-  //chrome.storage.sync.get(["breakTime"], function(result) {
-  //  let duration_ms = result.breakTime * 60 * 1000
-  //  bg.startTimer(duration_ms)
-  //});
   initTimers();
   bg.startTimer();
   bg.changeNotificationStage(bg.toBreakView);
   bg.viewState = bg.inBreakView;
 }
 
-
-// new
 function stopBreakTimer(event) { console.log('stopping break alarm');
   // bg.resetTimer()
   bg.initFocusTimer();
   console.log('stopping break alarm and changing to focus view', bg.viewState);
   bg.viewState = bg.inFocusView;
 }
+/***************************************************************** */
 
 
+// listen for update signal from background
 chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   if (message.type === bg.updatePopupTextSignal) {
     // from background
