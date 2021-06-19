@@ -76,20 +76,10 @@ function initFocusTimer() {
   initTimer(focusTimeInitialDurationMs)
 }
 
-function updateFocusTimerDefault() {
-  //console.log("set timer to focus timer with duration ", focusTimeInitialDurationMs)
-  updateTimerDefaultDuration(focusTimeInitialDurationMs)
-}
-
 function initBreakTimer() {
   //console.log("set timer to break timer with duration ", breakTimeInitailDurationMs)
   viewState = inBreakView
   initTimer(breakTimeInitialDurationMs)
-}
-
-function updateBreakTimerDefault() {
-  //console.log("set timer to Break timer with duration ", BreakTimeInitialDurationMs)
-  updateTimerDefaultDuration(BreakTimeInitialDurationMs)
 }
 // Focus/Break Timer API Ends
 /***************************************************************** */
@@ -115,20 +105,13 @@ var viewState = unInitializedView;
 
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
-let _durationMs = -1;
+var defaultDurationMS  = 30 * 60 * 1000;
+let _durationMs = defaultDurationMS;
 let _remainingMs = _durationMs;
 function initTimer(timer_duration_ms) {
   console.log(`init timer with duration ${timer_duration_ms}`)
   _durationMs = timer_duration_ms;
   resetTimer()
-}
-
-function updateTimerDefaultDuration(timer_duration_ms) {
-  //
-  //  Does not affect current running timer
-  //
-  console.log(`updating timer default to ${timer_duration_ms}`)
-  _durationMs = timer_duration_ms;
 }
 
 function startTimer() {
@@ -237,15 +220,6 @@ setInterval(function () {
       view: viewState
     }, function (response)  {
       console.log("popup view update signal sent");
-    }
-  )
-  // update timer default
-  chrome.runtime.sendMessage(
-    {
-      type: 'test',
-      view: viewState
-    }, function (response)  {
-      console.log("update timer default");
     }
   )
 }, interval_ms);
