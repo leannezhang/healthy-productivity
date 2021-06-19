@@ -137,7 +137,7 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
     return displayTime
   } else {
     let minutes = Math.floor(duration / 60);
-    let seconds = duration % 60;
+    let seconds = Math.ceil(duration % 60);
     if (seconds == 0) {
       displayTime = minutes.toString() + "m";
       return displayTime
@@ -156,7 +156,7 @@ function displayRemainingTime(duration_ms, badgeMode=false) {
 
 // Background loop that manages various state
 // and notify foreground to update
-let interval_ms = 1000
+let interval_ms = 100
 // useful for debug if you want to fastward time
 let time_coefficient = 1
 setInterval(function () {
