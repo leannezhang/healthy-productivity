@@ -22,6 +22,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   } else if (message.focusTimeInitialDurationMin) {
     // from option.js
     focusTimeInitialDurationMs = message.focusTimeInitialDurationMin * 60 * 1000;
+    chrome.storage.sync.set({ focusTimeInitialDurationMs: focusTimeInitialDurationMs }, function () {
+	console.log("focusTime is " + focusTime);
+    });
     console.log("focus timer init duration received")
     // if user changes duration in option, we should reflect 
     // that change and reset timer immediately
@@ -29,6 +32,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   } else if (message.breakTimeInitialDurationMin) {
     // from option.js
     breakTimeInitialDurationMs = message.breakTimeInitialDurationMin * 60 * 1000;
+    chrome.storage.sync.set({ breakTimeInitialDurationMs: breakTimeInitialDurationMs }, function () {
+	console.log("breakTime is " + breakTime);
+    });
     console.log("break timer init duration received")
     // if user changes duration in option, we should reflect 
     // that change and reset timer immediately
@@ -73,13 +79,17 @@ function changeNotificationStage (type) {
 function initFocusTimer() {
   //console.log("set timer to focus timer with duration ", focusTimeInitialDurationMs)
   viewState = inFocusView
-  initTimer(focusTimeInitialDurationMs)
+  chrome.storage.sync.get({ focusTimeInitialDurationMs: focusTimeInitialDurationMs }, function(result) {
+    initTimer(focusTimeInitialDurationMs)
+  })
 }
 
 function initBreakTimer() {
   //console.log("set timer to break timer with duration ", breakTimeInitailDurationMs)
   viewState = inBreakView
-  initTimer(breakTimeInitialDurationMs)
+  chrome.storage.sync.get({ breakTimeInitialDurationMs: breakTimeInitialDurationMs }, function(result) {
+    initTimer(breakTimeInitialDurationMs)
+  })
 }
 // Focus/Break Timer API Ends
 /***************************************************************** */
@@ -105,8 +115,9 @@ var viewState = unInitializedView;
 
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
-var defaultDurationMS  = 30 * 60 * 1000;
-let _durationMs = defaultDurationMS;
+let _durationMs = -1;
+// default is Focus timer on start up
+// initFocusTimer()
 let _remainingMs = _durationMs;
 function initTimer(timer_duration_ms) {
   console.log(`init timer with duration ${timer_duration_ms}`)

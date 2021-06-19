@@ -47,14 +47,14 @@ function changeView(view) {
 // functions for managing timers in background
 function initTimers() {
   // propagate timer durations to background
-  chrome.storage.sync.get(["focusTime"], function(result) {
-    let duration_ms = result.focusTime * 60 * 1000
-    bg.focusTimeInitialDurationMs = duration_ms
-  });
-  chrome.storage.sync.get(["breakTime"], function(result) {
-    let duration_ms = result.breakTime * 60 * 1000
-    bg.breakTimeInitialDurationMs = duration_ms
-  });
+  // chrome.storage.sync.get(["focusTime"], function(result) {
+  //   let duration_ms = result.focusTime * 60 * 1000
+  //   bg.focusTimeInitialDurationMs = duration_ms
+  // });
+  // chrome.storage.sync.get(["breakTime"], function(result) {
+  //   let duration_ms = result.breakTime * 60 * 1000
+  //   bg.breakTimeInitialDurationMs = duration_ms
+  // });
 
   // init timer depending on viewState
   // if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInitialized) ) {
