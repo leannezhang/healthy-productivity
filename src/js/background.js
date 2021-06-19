@@ -120,7 +120,6 @@ function startTimer() {
   timerState = running;
 };
 
-// duplicate?
 function resetTimer() {
   timerState = stopped;
   _remainingMs = _durationMs;
