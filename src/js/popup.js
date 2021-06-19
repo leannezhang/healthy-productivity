@@ -57,15 +57,15 @@ function initTimers() {
   });
 
   // init timer depending on viewState
-  if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInitialized) ) {
-    console.log(`setting focus alarm {$bg.focusTimeInitialDurationMs}`);
+  // if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInitialized) ) {
+  //   console.log(`setting focus alarm {$bg.focusTimeInitialDurationMs}`);
     
-    bg.initFocusTimer();
-  }
-  if ((bg.viewState === bg.inBreakView) && (bg.timerState === bg.unInitialized) ) {
-    console.log('setting break alarm');
-    bg.initBreakTimer();
-  }
+  //   bg.initFocusTimer();
+  // }
+  // if ((bg.viewState === bg.inBreakView) && (bg.timerState === bg.unInitialized) ) {
+  //   console.log('setting break alarm');
+  //   bg.initBreakTimer();
+  // }
 };
 
 function initView() {
