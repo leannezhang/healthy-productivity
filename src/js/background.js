@@ -1,12 +1,12 @@
 "use strict";
 // Public constants
-var toBreakView = 'toBreakView'
-var exitingBreakView = 'exitingBreakView'
-var toFocusView = 'toFocusView'
-var exitingFocusView = 'exitingFocusView'
-var updatePopupTextSignal = 'updatePopupTextSignal';
-var updatePopupViewSignal = 'updatePopupViewSignal';
-var timesupSignal = 'timesupSignal';
+const toBreakView = 'toBreakView'
+const exitingBreakView = 'exitingBreakView'
+const toFocusView = 'toFocusView'
+const exitingFocusView = 'exitingFocusView'
+const updatePopupTextSignal = 'updatePopupTextSignal';
+const updatePopupViewSignal = 'updatePopupViewSignal';
+const timesupSignal = 'timesupSignal';
 let exerciseURL = '';
 
 
@@ -97,10 +97,10 @@ function initBreakTimer() {
 
 // could be one of
 // running || stopped 
-var timerState = unInit;
 var running = 'running'
 var stopped = 'stopped'
 var unInit = 'unInit'
+var timerState = unInit;
 
 var focusTimeInitialDurationMs = -1;
 var breakTimeInitialDurationMs = -1;
