@@ -98,10 +98,10 @@ var timerState = unInitialized;
 var focusTimeInitialDurationMs = -1;
 var breakTimeInitialDurationMs = -1;
 
-var unInitView = 'unInitView';
+var unInitializedView = 'unInitializedView';
 var inFocusView = 'inFocusView';
 var inBreakView = 'inBreakView';
-var viewState = unInitView;
+var viewState = unInitializedView;
 
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
