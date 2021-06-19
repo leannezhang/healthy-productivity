@@ -105,24 +105,24 @@ var viewState = unInitView;
 
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
-let _initialDurationMs = 30 * 60 * 1000;
-let _remainingMs = _initialDurationMs;
+let _durationMs = 30 * 60 * 1000;
+let _remainingMs = _durationMs;
 function initTimer(timer_duration_ms) {
   console.log(`init timer with duration ${timer_duration_ms}`)
-  _initialDurationMs = timer_duration_ms;
+  _durationMs = timer_duration_ms;
   resetTimer()
 }
 
 function startTimer() {
-  console.log(`starting timer with duration ${_initialDurationMs}`)
-  _remainingMs = _initialDurationMs
+  console.log(`starting timer with duration ${_durationMs}`)
+  _remainingMs = _durationMs
   timerState = running;
 };
 
 // duplicate?
 function resetTimer() {
   timerState = stopped;
-  _remainingMs = _initialDurationMs;
+  _remainingMs = _durationMs;
   console.log("stopped timer, resetting to ", _remainingMs, viewState)
 };
 
@@ -191,7 +191,7 @@ setInterval(function () {
     case stopped:
       console.log("Timer has stopped");
       console.log("Setting badge")
-      _remainingMs = _initialDurationMs;
+      _remainingMs = _durationMs;
       chrome.browserAction.setBadgeText({text: displayRemainingTime(_remainingMs)})
       break;
     case unInitialized:
