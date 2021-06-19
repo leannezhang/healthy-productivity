@@ -105,7 +105,8 @@ var viewState = unInitView;
 
 // this should match the default in option
 // as there are no ways to sync the default value from option.html
-let _durationMs = 30 * 60 * 1000;
+var defaultDurationMS  = 30 * 60 * 1000;
+let _durationMs = defaultDurationMS;
 let _remainingMs = _durationMs;
 function initTimer(timer_duration_ms) {
   console.log(`init timer with duration ${timer_duration_ms}`)
