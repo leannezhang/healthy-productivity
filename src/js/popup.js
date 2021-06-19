@@ -6,6 +6,7 @@ let $breakTimeRemainingDiv = document.getElementById("breakTimeRemaining");
 let showView;
 let hideView;
 
+// let bg_loaded = false;
 let bg
 chrome.runtime.getBackgroundPage(function (backgroundPage) {
   console.log(`Got bg ${backgroundPage}`);
@@ -45,7 +46,7 @@ function changeView(view) {
 
 /***************************************************************** */
 // functions for managing timers in background
-function initTimers() {
+function UpdateTimerdefaultDuration() {
   // propagate timer durations to background
   chrome.storage.sync.get(["focusTime"], function(result) {
     let duration_ms = result.focusTime * 60 * 1000
@@ -57,14 +58,19 @@ function initTimers() {
   });
 
   // init timer depending on viewState
-  if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInitialized) ) {
-    console.log(`setting focus alarm {$bg.focusTimeInitialDurationMs}`);
-    
+  // if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInitialized) && (bg.initFoucsTimer != undefined )) {
+  if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInitialized)) {
+    console.log(`setting focus alarm ${bg.focusTimeInitialDurationMs}`);
     bg.initFocusTimer();
-  }
-  if ((bg.viewState === bg.inBreakView) && (bg.timerState === bg.unInitialized) ) {
+  } else if ((bg.viewState === bg.inBreakView) && (bg.timerState === bg.unInitialized) ) {
     console.log('setting break alarm');
     bg.initBreakTimer();
+  } else if (bg.viewState === bg.inFocusView) {
+    console.log(`updating focus timer default to {$bg.focusTimeInitialDurationMs}`);
+    bg.updateFocusTimerDefault()
+  } else if (bg.viewState === bg.inFocusView) {
+    console.log(`updating break alarm ${bg.focusTimeInitialDurationMs}`);
+    bg.updateBreakTimerDefault()
   }
 };
 
@@ -81,13 +87,13 @@ function init() {
   console.log('running init')
   initView();
   console.log('finished init view')
-  initTimers();
+  UpdateTimerdefaultDuration();
   console.log('finished init timer')
 }
 
 function startFocusTimer(event) {
   console.log('starting focus alarm');
-  initTimers();
+  UpdateTimerdefaultDuration();
   bg.startTimer();
   bg.changeNotificationStage(bg.toFocusView);
   bg.viewState = bg.inFocusView;
@@ -101,7 +107,7 @@ function stopFocusTimer(event) {
 
 function startBreakTimer(event) {
   console.log('starting break alarm');
-  initTimers();
+  UpdateTimerdefaultDuration();
   bg.startTimer();
   bg.changeNotificationStage(bg.toBreakView);
   bg.viewState = bg.inBreakView;
@@ -141,6 +147,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
     } else {
       console.log("Times up signal initiated, but no view state matched", message.nextViewState);
     }
+  } else if (message.type === 'test') {
+    UpdateTimerdefaultDuration()
   } else {
     console.log("Popup: Caught unmatched message", message)
   }
