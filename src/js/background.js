@@ -38,11 +38,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendReponse) => {
   }
 });
 
-function setExerciseURL (url) {
-    exerciseURL= url;
-    console.log("exceriseURL is",exerciseURL);
-}
-
 function changeNotificationStage (type) {
   if (type === toBreakView) {
     chrome.notifications.create({
@@ -60,7 +55,6 @@ function changeNotificationStage (type) {
       type: "basic"
     });
   } else if (type === toFocusView) {
-    // toFocusView
     chrome.notifications.create({
       title: "Time to focus",
       message:
