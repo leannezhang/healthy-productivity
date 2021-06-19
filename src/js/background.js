@@ -1,12 +1,12 @@
 "use strict";
 // Public constants
-const toBreakView = 'toBreakView'
-const exitingBreakView = 'exitingBreakView'
-const toFocusView = 'toFocusView'
-const exitingFocusView = 'exitingFocusView'
-const updatePopupTextSignal = 'updatePopupTextSignal';
-const updatePopupViewSignal = 'updatePopupViewSignal';
-const timesupSignal = 'timesupSignal';
+var toBreakView = 'toBreakView'
+var exitingBreakView = 'exitingBreakView'
+var toFocusView = 'toFocusView'
+var exitingFocusView = 'exitingFocusView'
+var updatePopupTextSignal = 'updatePopupTextSignal';
+var updatePopupViewSignal = 'updatePopupViewSignal';
+var timesupSignal = 'timesupSignal';
 let exerciseURL = '';
 
 
@@ -70,7 +70,6 @@ function changeNotificationStage (type) {
 
 /***************************************************************** */
 // Focus/Break Timer API
-//timer functions
 function initFocusTimer() {
   //console.log("set timer to focus timer with duration ", focusTimeInitialDurationMs)
   viewState = inFocusView
@@ -93,8 +92,8 @@ function initBreakTimer() {
 // running || stopped 
 var running = 'running'
 var stopped = 'stopped'
-var unInit = 'unInit'
-var timerState = unInit;
+var unInitialized = 'unInitialized'
+var timerState = unInitialized;
 
 var focusTimeInitialDurationMs = -1;
 var breakTimeInitialDurationMs = -1;
@@ -195,8 +194,8 @@ setInterval(function () {
       _remainingMs = _initialDurationMs;
       chrome.browserAction.setBadgeText({text: displayRemainingTime(_remainingMs)})
       break;
-    case unInit:
-      console.log("Timer is unInit");
+    case unInitialized:
+      console.log("Timer is unInitialized");
       break;
     default:
       console.error("Unknown timerState ", timerState);
