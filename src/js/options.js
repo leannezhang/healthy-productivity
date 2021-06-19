@@ -134,13 +134,7 @@ function resetDefaults() {
 
 function saveTimeOptions() {
   const focusTime = document.getElementById("focus-time").value;
-  chrome.storage.sync.set({ focusTime: focusTime }, function () {
-    console.log("focusTime is " + focusTime);
-  });
   const breakTime = document.getElementById("break-time").value;
-  chrome.storage.sync.set({ breakTime: breakTime }, function () {
-    console.log("breakTime is " + breakTime);
-  });
 
   // also update default value in background 
   // TODO we should unify the source of focusTime.
