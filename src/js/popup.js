@@ -45,31 +45,10 @@ function changeView(view) {
 
 /***************************************************************** */
 // functions for managing timers in background
-function initTimers() {
-  // propagate timer durations to background
-  chrome.storage.sync.get(["focusTime"], function(result) {
-    let duration_ms = result.focusTime * 60 * 1000
-    bg.focusTimeInitialDurationMs = duration_ms
-  });
-  chrome.storage.sync.get(["breakTime"], function(result) {
-    let duration_ms = result.breakTime * 60 * 1000
-    bg.breakTimeInitialDurationMs = duration_ms
-  });
-
-  // init timer depending on viewState
-  if ((bg.viewState === bg.inFocusView) && (bg.timerState === bg.unInit) ) {
-    console.log('setting focus alarm');
-    bg.initFocusTimer();
-  }
-  if ((bg.viewState === bg.inBreakView) && (bg.timerState === bg.unInit) ) {
-    console.log('setting break alarm');
-    bg.initBreakTimer();
-  }
-};
 
 function initView() {
   console.log('setting view to focus');
-  if (bg.viewState === bg.unInitView) {
+  if (bg.viewState === bg.unInitializedView) {
     bg.viewState = bg.inFocusView
   }
 };
@@ -80,13 +59,11 @@ function init() {
   console.log('running init')
   initView();
   console.log('finished init view')
-  initTimers();
   console.log('finished init timer')
 }
 
 function startFocusTimer(event) {
   console.log('starting focus alarm');
-  initTimers();
   bg.startTimer();
   bg.changeNotificationStage(bg.toFocusView);
   bg.viewState = bg.inFocusView;
@@ -100,7 +77,6 @@ function stopFocusTimer(event) {
 
 function startBreakTimer(event) {
   console.log('starting break alarm');
-  initTimers();
   bg.startTimer();
   bg.changeNotificationStage(bg.toBreakView);
   bg.viewState = bg.inBreakView;
